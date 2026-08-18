@@ -1,0 +1,19 @@
+# Dependencias do frontend
+frontend/node_modules/
+frontend/dist/
+
+# Ambiente virtual Python
+backend/.venv/
+backend/__pycache__/
+
+# Variaveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
