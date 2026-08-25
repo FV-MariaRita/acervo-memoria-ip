@@ -12,11 +12,11 @@
   --color-grafite: #2d2d2d;
   --color-branco: #FFF; 
 
-  /* Fontes prontas para o Tailwind v4 */
+  /* Fontes */
   --font-title: "Chau Philomene One", sans-serif; 
   --font-corpo: "Source Sans 3", sans-serif;
 }
 
 body {
-  @apply bg-color min-h-screen p-0 m-0 font-corpo;
+  @apply bg-color min-h-screen p-0 m-0 font-corpo justify-center;
 }

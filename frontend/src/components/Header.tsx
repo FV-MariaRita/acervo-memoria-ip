@@ -3,8 +3,7 @@ import logo from '../images/logo.png'
 const Header = () =>  {
     
     return (
-        <header className="bg-verde w-full h-20 m-0 py-6 px-10
-        flex justify-between items-center">
+        <header className=' bg-verde w-full h-20 m-0 py-6 px-10 flex justify-between items-center'>
             
             <img src={logo} alt='Logo Vozes do Imagens do Povo' className='w-auto h-12' />
             
