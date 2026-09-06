@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import logo from '../images/logo.png'
 
 const Header = () =>  {
@@ -9,9 +10,9 @@ const Header = () =>  {
             
             <nav className="font-title font-bold text-branco w-1/4 text-sm p-1">
                 <div className="flex justify-around">
-                    <a>Entrevistados</a>
-                    <a>Sobre</a>
-                    <a>Quem somos</a>
+                    <Link to="/entrevistas">Entrevistados</Link>
+                    <Link to="/sobre">Sobre</Link>
+                    <Link to="/quem-somos">Quem somos</Link>
                 </div>
             </nav>
 
