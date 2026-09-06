@@ -10,8 +10,8 @@ const CardEntrevistado = ({nome, foto, ocupacao, detalhes, dataNasc}: CardProps)
 
     return (
         <>
-            <div className='bg-ocre flex gap-4 w-2xl h-16 rounded-2xl py-10 pl-4 pr-10 items-center my-1 justify-start'>
-
+            <div className='bg-ocre flex gap-4 w-full h-16 rounded-2xl py-10 pl-4 pr-10 items-center my-1 justify-start'>
+                
                 <img src={foto} className='rounded-full w-16 h-16 object-cover'/>
 
                 <div className='flex flex-col gap-1.5 flex-nowrap justify-start'>

@@ -10,7 +10,7 @@ function MainLayout() {
      
       <Header />
 
-      <main className="flex-1">
+      <main className="flex-1 mx-24">
         <Outlet />
       </main>
 
