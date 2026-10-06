@@ -3,8 +3,9 @@ from sqlmodel import Session
 from app.database.connection import get_session
 
 # entrevistado
-from app.schemas.entrevistado import EntrevistadoCreate, EntrevistadoUpdate, EntrevistadoNomeResponse, EntrevistadoEntrevistaResponse
-from app.repositories.entrevistado import criar_entrevistado, atualizar_entrevistado, deletar_entrevistado
+from app.schemas.entrevistado import EntrevistadoComEntrevistaCreate, EntrevistadoUpdate, EntrevistadoNomeResponse, EntrevistadoEntrevistaResponse
+from app.repositories.entrevistado import atualizar_entrevistado, deletar_entrevistado
+from app.services.entrevistados import criar_entrevistado_com_entrevista
 from app.models.entrevistado import Entrevistado
 #from app.services.auth import require_admin
 
@@ -15,21 +16,31 @@ router = APIRouter(
 ) #garante que dominio/admin/qualquer coisa vai precisar estar com admin autenticado
 #fast api users
 
-# entrevistado
+# create
 @router.post(
     "/entrevistado",
     response_model = EntrevistadoNomeResponse
     )
-def cadastrar_entrevistado (
-    dados: EntrevistadoCreate, 
+def cadastrar_entrevistado_com_entrevista (
+    dados: EntrevistadoComEntrevistaCreate, 
     session: Session = Depends(get_session)
     ):
 
-    entrevistado = Entrevistado(**dados.model_dump())
+    entrevistado = criar_entrevistado_com_entrevista (
+        dados = dados,
+        session = session
+    )
 
-    return criar_entrevistado(entrevistado = entrevistado, session = session)
+    if not entrevistado:
+        raise HTTPException(
+            status_code = 1,
+            detail = ""
+        )
+
+    return entrevistado
 
 
+# update
 @router.patch(
     "/entrevistados/{id}",
     response_model = EntrevistadoEntrevistaResponse
@@ -55,6 +66,7 @@ def editar_entrevistado (
     return entrevistado
 
 
+# delete
 @router.delete(
     "/entrevistados/{id}",
     response_model = EntrevistadoNomeResponse

@@ -1,10 +1,15 @@
 from sqlmodel import SQLModel
+from app.schemas.entrevista import EntrevistaCreate
 
 class EntrevistadoCreate (SQLModel):
     nome: str
     bio: str
     funcao: str
     path_foto: str
+
+class EntrevistadoComEntrevistaCreate (SQLModel):
+    entrevistado: EntrevistadoCreate
+    entrevista: EntrevistaCreate
 
 class EntrevistadoUpdate (SQLModel):
     nome: str | None = None

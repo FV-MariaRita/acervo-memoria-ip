@@ -4,7 +4,10 @@ from app.database.connection import get_session
 from app.schemas.entrevistado import EntrevistadoEntrevistaResponse, EntrevistadoListaResponse
 from app.repositories.entrevistado import listar_entrevistados, buscar_entrevistado
 
-router = APIRouter()
+router = APIRouter(
+    prefix="",
+    tags=["Entrevistados"]
+)
 
 @router.get(
     "/entrevistados",

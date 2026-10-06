@@ -1,5 +1,6 @@
 from sqlmodel import Session, select
 from app.models.entrevistado import Entrevistado
+from app.schemas.entrevistado import EntrevistadoUpdate, EntrevistadoCreate
 
 def listar_entrevistados (
     session: Session
@@ -18,13 +19,11 @@ def buscar_entrevistado (
 
 
 def criar_entrevistado ( 
-    entrevistado: Entrevistado,
+    entrevistado: EntrevistadoCreate,
     session: Session
     ) -> Entrevistado:
 
     session.add(entrevistado)
-    session.commit()
-    session.refresh(entrevistado)
 
     return entrevistado
 
@@ -37,7 +36,7 @@ def atualizar_entrevistado (
     entrevistado = session.get(Entrevistado, id)
 
     if not entrevistado:
-        return None;
+        return None
 
     dados = dados.model_dump(exclude_unset=True)
 

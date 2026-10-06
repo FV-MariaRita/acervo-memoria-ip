@@ -6,6 +6,7 @@ class Entrevista (SQLModel, table=True):
     id: int | None = Field(default = None, primary_key = True)
     local: str
     data: date
+    entrevistado_id: int = Field(foreign_key="entrevistado.id", ondelete="CASCADE")
     path_audio: str = Field(sa_column=Column(Text, nullable=False))
     path_transcricao: str = Field(sa_column=Column(Text, nullable=False))
 
