@@ -4,15 +4,20 @@ const CardEntrevistado = ({nome, path_foto, funcao}: EntrevistadoLista) => {
 
     return (
         <>
-            <div className='bg-ocre flex gap-4 w-full h-16 rounded-2xl py-10 pl-4 pr-10 items-center my-1 justify-start'>
+            <div className='bg-ocre flex items-center gap-3 w-full rounded-2xl p-3 my-1 md:justify-start md:gap-4 md:p-4'>
                 
-                <img src={path_foto} className='rounded-full w-16 h-16 object-cover'/>
+                <img 
+                    src={path_foto} 
+                    className="rounded-full w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-cover shrink-0"
+                />
 
-                <div className='flex flex-col gap-1.5 flex-nowrap justify-start'>
+                <div className='flex flex-col gap-2.5 min-w-0 flex-nowrap justify-start'>
                     
-                    <h4 className='font-title text-lg font-bold text-branco'>{nome}</h4>
+                    <h4 className="font-title text-base sm:text-lg font-bold text-branco truncate leading-tight">
+                        {nome}
+                    </h4>
                     
-                    <div className="flex flex-row gap-1 font-corpo text-branco text-xs italic">
+                    <div className="font-corpo text-xs sm:text-sm text-branco/80 italic truncate">
                         {funcao} 
                     </div>
 

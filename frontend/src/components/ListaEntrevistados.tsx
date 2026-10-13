@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { listarEntrevistados } from "../services/entrevistados";
 import type { EntrevistadoLista } from "../types/entrevistado";
 import CardEntrevistado from "./CardEntrevistado";
+import { listarEntrevistados } from "../services/entrevistados";
 
 
 
@@ -18,7 +18,7 @@ const ListaEntrevistados = () => {
 
             .catch((error) => {
                 console.error('Erro na busca por entrevistados: ', error);
-            });
+            });  
         
     }, []);
 
@@ -49,32 +49,37 @@ export default ListaEntrevistados;
 
 
 /*
-DADOS LOCAIS PARA EFEITO DE TESTE 
---> colocar esse código dentro do useEffect
+DADOS LOCAIS PARA EFEITO DE TESTE
 
-        const dados: EntrevistadoLista[] = [
+    import rataoImg from "../images/ratao.jpg";
+    import elisangelaImg from "../images/elisangela.jpg";
+    import patriciaImg from "../images/patricia.jpg";
+    import ripperImg from "../images/ripper.jpg";   
+    
+    --> colocar esse código dentro do useEffect
+
+    const dados: EntrevistadoLista[] = [
             {
                 nome: "Ratão Diniz",
-                path_foto: "/src/images/ratao.jpg", 
+                path_foto: rataoImg, 
                 funcao: "Fotógrafo",
             },
             {
                 nome: "Elisângela Leite",
-                path_foto: "/src/images/elisangela.jpg", 
+                path_foto: elisangelaImg, 
                 funcao: "Fotógrafa",
             }, 
             {
                 nome: "Patrícia Dias",
-                path_foto: "/src/images/patricia.jpg",
+                path_foto: patriciaImg,
                 funcao: "Fotógrafa",
             },
             {
                 nome: "João Ripper",
-                path_foto: "/src/images/ripper.jpg", 
+                path_foto: ripperImg, 
                 funcao: "Fotógrafo",
             }
         ];  
 
-        setEntrevistados(dados);
-
+        setEntrevistados(dados); 
 */

@@ -20,5 +20,5 @@
 }
 
 body {
-  @apply min-h-screen p-0 m-0 font-corpo justify-center bg-brancopapel;
+  @apply min-h-screen p-0 m-0 font-corpo justify-center bg-brancoPapel;
 }
