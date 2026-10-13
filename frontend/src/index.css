@@ -2,15 +2,17 @@
 
 @theme {
   /* Fundo padrao do site */
-  --color-color: #f5f1e8;
+  --color-brancoPapel: #f5f1e8;
 
   /* Cores padrao */ 
   --color-verde: #2e7d5b; 
+  --color-verde-escuro: #286E50;
   --color-marrom: #7a5a3a;
   --color-vinho: #7c4a52;
   --color-ocre: #b8923f;
   --color-grafite: #2d2d2d;
   --color-branco: #FFF; 
+
 
   /* Fontes */
   --font-title: "Chau Philomene One", sans-serif; 
@@ -18,5 +20,5 @@
 }
 
 body {
-  @apply bg-color min-h-screen p-0 m-0 font-corpo justify-center;
+  @apply min-h-screen p-0 m-0 font-corpo justify-center bg-brancopapel;
 }

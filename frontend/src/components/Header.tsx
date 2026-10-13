@@ -13,8 +13,8 @@ const Header = () =>  {
             <nav className="font-title font-bold text-branco w-1/4 text-sm p-1">
                 <div className="flex justify-around">
                     <Link to="/entrevistas">Entrevistados</Link>
-                    <Link to="/sobre">Sobre</Link>
-                    <Link to="/quem-somos">Quem somos</Link>
+                    <Link to="/entrevistadores">Entrevistadores</Link>
+                    <Link to="/sobre-nos">Sobre</Link>
                 </div>
             </nav>
 

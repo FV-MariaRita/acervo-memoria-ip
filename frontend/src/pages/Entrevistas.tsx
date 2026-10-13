@@ -8,7 +8,7 @@ const Entrevistas = () => {
             <div className="w-full max-w-4xl py-4"> 
 
                 <h1 className="font-title text-vinho text-2xl font-bold my-4 text-center">
-                    Entrevistas
+                    Entrevistados
                 </h1>
 
                 <p className="font-corpo text-grafite text-justify text-sm mb-6 px-6">

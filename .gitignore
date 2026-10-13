@@ -17,3 +17,5 @@ Thumbs.db
 
 # Logs
 *.log
+# React Component Preview
+previewConfig.json
