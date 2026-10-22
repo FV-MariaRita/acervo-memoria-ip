@@ -1,6 +1,6 @@
 import ListaEntrevistados from "../components/ListaEntrevistados";
 
-const Entrevistas = () => {
+const Entrevistados = () => {
 
     return (
         <div className="flex flex-col items-center">
@@ -28,4 +28,4 @@ const Entrevistas = () => {
     )
 }
 
-export default Entrevistas;
+export default Entrevistados;
