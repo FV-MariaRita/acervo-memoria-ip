@@ -3,8 +3,6 @@ import rataoImg from "../images/ratao.jpg";
 import elisangelaImg from "../images/elisangela.jpg";
 import patriciaImg from "../images/patricia.jpg";
 
-import patriciaEntrevista from "../audio/audioPatricia.m4a"
-
 import { Link } from 'react-router-dom';
 import Carrossel from "../components/Carrossel";
 import DropdownSumario from "../components/DropdownSumario";
@@ -70,7 +68,7 @@ const EntrevistadoEspecifica = ({ entrevista }: EntrevistaProps) => {
               <audio
                 ref={audio}
                 controls
-                src={patriciaEntrevista}
+                src={entrevista?.path_audio}
                 className="w-full h-12 rounded-full shadow-md custom-audio-player"
               />
             </div>
