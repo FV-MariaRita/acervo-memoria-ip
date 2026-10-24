@@ -1,3 +1,5 @@
+import type { EntrevistaCreate } from "./entrevista";
+
 //TIPOS DE GET -> RECEBE DADOS DA API
 export interface EntrevistadoLista {
     nome: string;
@@ -5,8 +7,11 @@ export interface EntrevistadoLista {
     path_foto: string;
 }
 
-export interface EntrevistadoDetalhe extends EntrevistadoLista {
-    bio: string;
+export interface EntrevistadoEntrevista  {
+    nome: string; 
+    bio: string; 
+    path_foto: string; 
+
 }
 
 export interface EntrevistadoNome {
@@ -19,6 +24,11 @@ export interface EntrevistadoCreate {
     bio: string;
     funcao: string; 
     path_foto: string;
+}
+
+export interface EntrevistadoComEntrevistaCreate {
+    entrevistado: EntrevistadoCreate;
+    entrevista: EntrevistaCreate;
 }
 
 export interface EntrevistadoUpdate {

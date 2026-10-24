@@ -1,19 +1,19 @@
 //import type { EntrevistadorLista } from "../types/entrevistador"
 
-interface CardProps {
+/*interface CardProps {
     id: number
-}
+} */
 
-const CardEntrevistador = ({id} : CardProps) => {
+const CardEntrevistador = (/*{id} : CardProps*/) => {
 
     return (
         <>
 
-        <div className="px-8 py-4 flex flex-row gap-4 justify-evenly">
+        <div className="px-8 py-4 flex flex-row gap-2 justify-evenly max-w-2xl">
 
-            <img src="/src/images/ratao.jpg" className="rounded-2xl object-cover w-36 h-48 shrink-0"/>
+            <img src="/src/images/ratao.jpg" className="rounded-2xl object-cover w-32 h-44 shrink-0"/>
 
-            <div className="flex flex-col gap-4 pt-2 max-w-3/5">
+            <div className="flex flex-col gap-2 pt-2 max-w-3/5">
 
                 <div className="font-semibold text-lg text-grafite">Ratão</div>
 

@@ -20,7 +20,7 @@ const Entrevistadores = () => {
                     vel congue ornare, nulla nisi pretium dolor, vestibulum euismod quam orci non diam. 
                 </p>
                 
-                <div className="flex flex-col items-center justify-start my-5 mx-auto gap-2 bg-verde/50 w-auto rounded-2xl">
+                <div className="flex flex-col items-center justify-start my-5 mx-auto gap-2 bg-verde/50 md:max-w-2xl rounded-2xl">
 
                     <div className='bg-verde-escuro text-white font-bold text-left w-full pl-6 py-2 rounded-t-2xl h-3' />
                         

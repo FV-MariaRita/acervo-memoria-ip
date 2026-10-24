@@ -8,12 +8,12 @@ import type {
 
 
 export function listarEntrevistadores(): Promise<EntrevistadorLista[]> {
-    return (apiFetch('/entrevistadores'));
+    return (apiFetch<EntrevistadorLista[]>('/entrevistadores'));
 }
 
 export function criarEntrevistador (dados : EntrevistadorCreate): Promise<void> {
 
-    return apiFetch('/entrevistadores', {
+    return apiFetch<void>('/entrevistadores', {
         method: 'POST', 
         headers: {
             "Content-Type" : "application/json"
@@ -22,9 +22,9 @@ export function criarEntrevistador (dados : EntrevistadorCreate): Promise<void> 
     });
 }
 
-export function alterarEntrevistador(dados: EntrevistadorUpdate): Promise<void> {
+export function alterarEntrevistador(id: number, dados: EntrevistadorUpdate): Promise<void> {
 
-    return apiFetch('/entrevistadores', {
+    return apiFetch<void>(`entrevistadores/${id}`, {
         method: 'POST', 
         headers: {
             "Contente-Type": "application/json"
@@ -35,7 +35,7 @@ export function alterarEntrevistador(dados: EntrevistadorUpdate): Promise<void> 
 
 export function excluirEntrevistador(id: number): Promise<void> {
 
-    return apiFetch('/entrevistadores', {
+    return apiFetch(`entrevistadores/${id}`, {
         method: 'DELETE', 
         headers: {
             "Content-Type": "application/json"

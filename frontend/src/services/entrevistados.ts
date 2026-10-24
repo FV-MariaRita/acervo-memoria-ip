@@ -2,58 +2,47 @@ import { apiFetch } from "./api";
 
 import type { 
     EntrevistadoCreate,
-    EntrevistadoDetalhe,
+    EntrevistadoEntrevista,
     EntrevistadoLista, 
-    EntrevistadoUpdate  
+    EntrevistadoUpdate
 } from "../types/entrevistado";
 
-
 export function listarEntrevistados(): Promise<EntrevistadoLista[]> {
-    return apiFetch('/entrevistados'); //API_ROUTES.GET_ENTREVISTADOS
+
+    return apiFetch<EntrevistadoLista[]>("/entrevistados");
 }
 
-export function detalhesEntrevistado( id: number ) : Promise<EntrevistadoDetalhe[]> {
-    return apiFetch(`/entrevistados/${id}`);
+export function buscarEntrevistados (id:number): Promise<EntrevistadoLista> {
+
+    return apiFetch<EntrevistadoLista>(`/entrevistados/${id}`);
 }
 
-export function criarEntrevistado (dados: EntrevistadoCreate): Promise<EntrevistadoDetalhe[]> {
+export function criarEntrevistado (dados: EntrevistadoCreate): Promise <void> {
 
-    return apiFetch ( "/entrevistados", {
-        method: "POST", 
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify(dados)
-    }
-
-    )
-}
-
-export function alterarEntrevistado (dados: EntrevistadoUpdate): Promise<EntrevistadoDetalhe[]> {
-
-    return apiFetch( "/entrevistados", {
-        method: "POST", 
-
+    return apiFetch<void>("/entrevistados", {
+        method: "POST",
         headers: {
             "Content-Type": "application/json"
         }, 
-
         body: JSON.stringify(dados)
-    })
+    });
 }
 
-export function excluirEntrevistado (id: number): Promise<void>{
+export function alterarEntrevistado (id: number, dados: EntrevistadoUpdate): Promise<EntrevistadoEntrevista> {
 
-    return apiFetch( "/entrevistados", {
+    return apiFetch<EntrevistadoEntrevista>(`/entrevistados/${id}`, {
 
-        method: "DELETE", 
-
+        method: "PATCH", 
         headers: {
             "Content-Type": "application/json"
         },
+        body: JSON.stringify(dados)
+    });
+}
 
-        body: JSON.stringify(id)
-    })
+export function excluirEntrevistado (id: number): Promise<void> {
+    
+    return apiFetch<void>(`/entrevistados/${id}`, {
+        method: "DELETE"
+    });
 }

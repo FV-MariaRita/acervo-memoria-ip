@@ -5,6 +5,7 @@ import Home from '../pages/Home';
 import Entrevistados from '../pages/Entrevistados';
 import SobreNos from '../pages/Sobre';
 import Entrevistadores from '../pages/Entrevistadores';
+import EntrevistadoEspecifica from '../pages/EntrevistadoEspecifica';
 
 
 function AppRoutes() {
@@ -17,6 +18,7 @@ function AppRoutes() {
                 <Route path='/entrevistados' element={<Entrevistados />} />
                 <Route path='/sobre-nos' element={<SobreNos />} />
                 <Route path='/entrevistadores' element={<Entrevistadores />} />
+                <Route path='/entrevistados/eu' element={<EntrevistadoEspecifica />} />
             </Route>           
         </Routes>
 
