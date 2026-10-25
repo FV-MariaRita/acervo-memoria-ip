@@ -19,7 +19,7 @@ router = APIRouter(
 # create
 @router.post(
     "/entrevistado",
-    response_model = EntrevistadoNomeResponse
+    response_model = EntrevistadoNomeResponse #colocar dados de entrevista + entrevistado
     )
 def cadastrar_entrevistado_com_entrevista (
     dados: EntrevistadoComEntrevistaCreate, 

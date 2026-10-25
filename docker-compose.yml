@@ -16,6 +16,9 @@ services:
       - "8000:8000"
     environment:
       POSTGRES_URL: ${POSTGRES_URL}
+      B2_KEY_ID: ${B2_KEY_ID}
+      B2_APPLICATION_KEY: ${B2_APPLICATION_KEY}
+      B2_BUCKET: ${B2_BUCKET}
     depends_on:
       - postgres
 

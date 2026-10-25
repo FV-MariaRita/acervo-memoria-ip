@@ -1,0 +1,7 @@
+
+mudanças no branco de dados:
+1. alterar o model correspondente
+2. docker compose exec backend alembic revision --autogenerate -m "" -> cria nova versão do banco
+3. verificar nova versão do alembic em alembic/versions
+4. docker compose exec backend alembic upgrade head -> o banco assume essa versão
+5. docker compose exec backend alembic check -> confere se há mudanças ainda
