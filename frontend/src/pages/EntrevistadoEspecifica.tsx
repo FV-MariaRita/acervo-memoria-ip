@@ -84,33 +84,39 @@ const EntrevistadoEspecifica = ({ entrevista }: EntrevistaProps) => {
               Solicite acesso
             </div>
           </h2>
+
         </div>  
       </div>
 
-      {/* FOTOS DO ENCONTRO */}
-      <div className="w-full bg-verde py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <h2 className="text-[1.2rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-right">
-            Registros do encontro
-          </h2>
-          <div className="w-full md:w-2/3 max-w-lg">
-            <Carrossel path_fotos={fotos} />
+      <div className="w-full h-screen flex flex-col overflow-hidden">
+        {/* FOTOS DO ENCONTRO */}
+        <div className="w-full bg-verde py-12 px-6 h-1/2">
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
+            <h2 className="text-[1.5rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-right">
+              Registros do encontro
+            </h2>
+            <div className="w-full md:w-1/2 max-w-md">
+              <Carrossel path_fotos={fotos} />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* FOTOS MARCANTES */}
-      <div className="w-full bg-vinho py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="w-full md:w-2/3 max-w-lg">
-            <Carrossel path_fotos={fotos} />
+        {/* FOTOS MARCANTES */}
+        <div className="w-full bg-vinho py-12 px-6 h-1/2">
+
+          {}
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
+            <div className="w-full md:w-1/2 max-w-md">
+              <Carrossel path_fotos={fotos} />
+            </div>
+            <h2 className="text-[1.5rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-left">
+              Fotos marcantes
+            </h2>
           </div>
-          <h2 className="text-[1.2rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-left">
-            Fotos marcantes
-          </h2>
         </div>
-      </div>
 
+      </div>
+      
       {/* SUGESTÕES */}
       <div className="w-full max-w-[52rem] flex flex-col justify-center gap-12 mt-10 mb-8 px-6">
         <div className="flex flex-col gap-3">

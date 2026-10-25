@@ -7,13 +7,13 @@ const Entrevistadores = () => {
 
         <div className="flex flex-col items-center ">
             
-            <div className="w-full max-w-3xl py-4 gap-4"> 
+            <div className="w-full max-w-4xl py-4 gap-4"> 
 
-                <h1 className="font-title text-vinho text-2xl font-bold my-4 text-center">
+                <h1>
                     Entrevistadores
                 </h1>
 
-                <p className="font-corpo text-grafite text-justify text-sm mb-6 px-6">
+                <p className="font-corpo text-grafite text-justify text-base mb-6 px-6">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean egestas suscipit lacus, in iaculis nisi 
                     dictum placerat. Duis pretium rutrum vulputate. Nulla imperdiet mauris magna. Nam a rutrum leo. Aliquam 
                     tempor felis sit amet purus placerat, nec tristique odio mollis. In eget porta nulla. In laoreet, elit 
@@ -26,9 +26,9 @@ const Entrevistadores = () => {
                         
 
                     <div>
-                        <CardEntrevistador id={0} />
-                        <CardEntrevistador id={1}/>
-                        <CardEntrevistador id={2}/>
+                        <CardEntrevistador />
+                        <CardEntrevistador />
+                        <CardEntrevistador />
                     </div>
                     
                 </div>                

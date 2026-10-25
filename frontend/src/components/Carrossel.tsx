@@ -34,7 +34,7 @@ const Carrossel = ({ path_fotos }: CarrosselProps) => {
           <img 
             src={foto} 
             alt={`Foto ${index + 1}`}
-            className="w-full h-90 object-cover rounded-2xl"
+            className="w-full max-h-[40vh] aspect-[16/9] object-cover rounded-2xl"
           />
         </SwiperSlide>
       ))}

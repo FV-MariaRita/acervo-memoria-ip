@@ -23,6 +23,10 @@ body {
   @apply min-h-screen p-0 m-0 font-corpo justify-center bg-brancoPapel;
 }
 
+h1 {
+  @apply text-vinho text-2xl sm:text-3xl font-bold font-serif my-4 text-center
+}
+
 /*Customização para deixar o player de áudio do jeito que queremos */
 .custom-audio-player {
   background-color: #7c4a52 !important; 
@@ -52,4 +56,25 @@ audio::-webkit-media-controls-overflow-button {
 audio::-webkit-media-controls-overflow-button {
   filter: invert(1) brightness(2) !important;
   color: #ffffff !important; 
+}
+
+/*Personalizar a barra de rolagem do navegador */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #0d5c46 transparent; /* Adapte com a cor verde do seu projeto */
+}
+
+/* Chrome / Safari / Edge */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0d5c46;
+  border-radius: 4px;
 }

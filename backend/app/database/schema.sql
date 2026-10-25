@@ -15,11 +15,13 @@ CREATE TABLE entrevistado (
 
 CREATE TABLE entrevista (
     id SERIAL NOT NULL PRIMARY KEY,
+    entrevistado_id INT NOT NULL,
 	local VARCHAR(50) NOT NULL,
 	data Date NOT NULL,
     path_audio TEXT NOT NULL,
-	path_transcricao TEXT NOT NULL
+	path_transcricao TEXT NOT NULL,
 
+    foreign key (entrevistado_id) references entrevistado(id) ON DELETE CASCADE
 );
 
 create table entrevistador_entrevista (
