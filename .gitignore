@@ -19,3 +19,6 @@ Thumbs.db
 *.log
 # React Component Preview
 previewConfig.json
+# Cache do Python
+__pycache__/
+*.py[cod]
