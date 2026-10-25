@@ -2,15 +2,17 @@
 
 @theme {
   /* Fundo padrao do site */
-  --color-color: #f5f1e8;
+  --color-brancoPapel: #f5f1e8;
 
   /* Cores padrao */ 
   --color-verde: #2e7d5b; 
+  --color-verde-escuro: #286E50;
   --color-marrom: #7a5a3a;
   --color-vinho: #7c4a52;
   --color-ocre: #b8923f;
   --color-grafite: #2d2d2d;
   --color-branco: #FFF; 
+  --color-brancoPapel-hover: #E4D9C0;
 
   /* Fontes */
   --font-title: "Chau Philomene One", sans-serif; 
@@ -18,5 +20,36 @@
 }
 
 body {
-  @apply bg-color min-h-screen p-0 m-0 font-corpo justify-center;
+  @apply min-h-screen p-0 m-0 font-corpo justify-center bg-brancoPapel;
+}
+
+/*Customização para deixar o player de áudio do jeito que queremos */
+.custom-audio-player {
+  background-color: #7c4a52 !important; 
+}
+
+.custom-audio-player::-webkit-media-controls-panel {
+  background-color: #7c4a52 !important; 
+}
+
+audio::-webkit-media-controls-panel {
+  background-color: #7c4a52; 
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+  color: #ffffff !important;
+  text-shadow: none !important; 
+}
+
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-mute-button,
+audio::-webkit-media-controls-overflow-button {
+  filter: invert(1) brightness(2); 
+  opacity: 1 !important;
+}
+
+audio::-webkit-media-controls-overflow-button {
+  filter: invert(1) brightness(2) !important;
+  color: #ffffff !important; 
 }
