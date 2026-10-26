@@ -21,11 +21,7 @@ def get_b2_api():
 
     return b2_api
 
-def upload_file(
-    file_path: str,
-    b2_path: str,
-    content_type: str
-):
+def get_bucket():
     b2_api = get_b2_api()
 
     bucket_name = os.getenv("B2_BUCKET")
@@ -35,10 +31,7 @@ def upload_file(
 
     bucket = b2_api.get_bucket_by_name(bucket_name)
 
-    uploaded_file = bucket.upload_local_file(
-        local_file = file_path,
-        file_name = b2_path,
-        content_type = content_type
-    )
+    return bucket
 
-    return uploaded_file
+def upload_file():
+    #definir

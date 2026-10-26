@@ -1,14 +1,30 @@
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Field
+
+from app.validators.string import NonBlankString
 
 class EntrevistadorCreate (SQLModel):
-    nome: str
-    bio: str
-    path_foto: str
+    nome: NonBlankString = Field(
+        min_length=1,
+        max_length=100
+    )
+    bio: NonBlankString = Field(
+        min_length=1,
+        max_length=300
+    )
+    # path_foto incluido pelo backend
 
 class EntrevistadorUpdate (SQLModel):
-    nome: str | None = None
-    bio: str | None = None
-    path_foto: str | None = None
+    nome: NonBlankString | None = Field(
+        default=None,
+        min_length=1,
+        max_length=100
+    )
+    bio: NonBlankString | None = Field(
+        default=None,
+        min_length=1,
+        max_length=300
+    )
+    # path_foto incluido pelo backend
 
 class EntrevistadorListaResponse (SQLModel):
     nome: str

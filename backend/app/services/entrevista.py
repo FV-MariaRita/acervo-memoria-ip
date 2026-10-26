@@ -28,6 +28,8 @@ def criar_entrevista_completa (
         session.add(entrevista)
         session.flush()
 
+        #for entrevistador_id in dados.entrevistadores: add buscar_entrevistador pra validar
+
         for entrevistador_id in dados.entrevistadores:
             associacao = associar_entrevistador_entrevista (
                     entrevista_id = entrevista.id,

@@ -29,8 +29,15 @@ def associar_entrevistador_entrevista (
     entrevista_id: int,
     entrevistador_id: int,
     session: Session
-    ) -> Entrevistador_entrevista:
+    ) -> Entrevistador_entrevista | None:
 
+    entrevistador = session.get(Entrevistador, entrevistador_id)
+
+    if entrevistador is None:
+        raise ValueError(
+            f"Entrevistador {entrevistador_id} não encontrado."
+        )
+    
     associacao = Entrevistador_entrevista(
         entrevista_id = entrevista_id,
         entrevistador_id = entrevistador_id

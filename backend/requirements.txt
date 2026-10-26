@@ -6,3 +6,6 @@ psycopg[binary]
 alembic
 python-dotenv
 b2sdk
+pillow
+python-multipart
+pypdf
