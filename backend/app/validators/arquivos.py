@@ -9,6 +9,12 @@ from PIL import Image, UnidentifiedImageError
 MAX_TAMANHO_FOTO = 10 * 1024 * 1024  # 10 MB
 FORMATOS_PERMITIDOS = {"JPEG", "PNG", "WEBP"}
 
+FORMATOS_FOTO = {
+    "JPEG": (".jpg", "image/jpeg"),
+    "PNG": (".png", "image/png"),
+    "WEBP": (".webp", "image/webp"),
+}
+
 MAX_LARGURA = 6000
 MAX_ALTURA = 6000
 
@@ -33,7 +39,7 @@ def validar_tamanho_foto(conteudo: bytes) -> None:
         )
 
 
-def validar_formato_foto(conteudo: bytes) -> None:
+def validar_formato_foto(conteudo: bytes) -> str:
     try:
         with Image.open(BytesIO(conteudo)) as imagem:
             if imagem.format not in FORMATOS_PERMITIDOS:
@@ -41,6 +47,7 @@ def validar_formato_foto(conteudo: bytes) -> None:
                     status_code=415,
                     detail="Formato de foto não permitido."
                 )
+            return image.format
 
     except HTTPException: #raise a http exception que houve
         raise
@@ -128,13 +135,19 @@ async def validar_foto(
     conteudo = await arquivo.read(MAX_TAMANHO_FOTO + 1)
 
     validar_tamanho_foto(conteudo)
-    validar_formato_foto(conteudo)
+    formato = validar_formato_foto(conteudo)
     validar_integridade_foto(conteudo)
     validar_dimensoes_foto(conteudo, tipo_foto)
 
+    extensao, content_type = FORMATOS_FOTO[formato]
+
     await arquivo.seek(0)
 
-    return conteudo
+    return ArquivoValidado(
+        extensao=extensao,
+        content_type=content_type,
+        conteudo=conteudo,
+    )
 
 # audio
 
@@ -403,6 +416,10 @@ async def validar_pdf(arquivo: UploadFile) -> bytes:
         validar_formato_pdf(conteudo)
         validar_integridade_pdf(conteudo)
 
-        return conteudo
+        return ArquivoValidado(
+            extensao=".pdf",
+            content_type="application/pdf",
+            conteudo=conteudo,
+        )
     finally:
         await arquivo.seek(0)

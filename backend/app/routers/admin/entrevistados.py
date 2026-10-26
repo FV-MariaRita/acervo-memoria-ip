@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
 from sqlmodel import Session
 from app.database.connection import get_session
 
@@ -7,6 +7,9 @@ from app.schemas.entrevistado import EntrevistadoComEntrevistaCreate, Entrevista
 from app.repositories.entrevistado import atualizar_entrevistado, deletar_entrevistado
 from app.services.entrevistados import criar_entrevistado_com_entrevista
 from app.models.entrevistado import Entrevistado
+
+# complemento da entrevista
+from app.schemas.entrevista import Fotos_entrevistaCreate
 #from app.services.auth import require_admin
 
 router = APIRouter(
@@ -21,12 +24,21 @@ router = APIRouter(
     "/entrevistado",
     response_model = EntrevistadoNomeResponse #colocar dados de entrevista + entrevistado
     )
-def cadastrar_entrevistado_com_entrevista (
-    dados: EntrevistadoComEntrevistaCreate, 
+async def cadastrar_entrevistado_com_entrevista (
+    dados: str = Form(...), 
+    foto_entrevistado: UploadFile = File(...),
+    fotos_entrevista: list[UploadFile] = File(...),
+    fotos_marcantes: list[UploadFile] = File(...),
+    audio: UploadFile = File(...),
+    trasncricao: UploadFile = File(...),
     session: Session = Depends(get_session)
     ):
 
-    entrevistado = criar_entrevistado_com_entrevista (
+    dados = EntrevistadoComEntrevistaCreate.model_validate_json(
+        dados
+    )
+
+    entrevistado = await criar_entrevistado_com_entrevista (
         dados = dados,
         session = session
     )
