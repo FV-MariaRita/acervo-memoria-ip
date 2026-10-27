@@ -2,6 +2,7 @@ import type { EntrevistaCreate } from "./entrevista";
 
 //TIPOS DE GET -> RECEBE DADOS DA API
 export interface EntrevistadoLista {
+    id: number;
     nome: string;
     funcao: string; 
     path_foto: string;
@@ -11,7 +12,6 @@ export interface EntrevistadoEntrevista  {
     nome: string; 
     bio: string; 
     path_foto: string; 
-
 }
 
 export interface EntrevistadoNome {
@@ -22,8 +22,7 @@ export interface EntrevistadoNome {
 export interface EntrevistadoCreate {
     nome: string;
     bio: string;
-    funcao: string; 
-    path_foto: string;
+    funcao: string;
 }
 
 export interface EntrevistadoComEntrevistaCreate {
@@ -35,5 +34,4 @@ export interface EntrevistadoUpdate {
     nome?: string;
     bio?: string; 
     funcao?: string; 
-    path_foto?: string;
 }

@@ -3,11 +3,13 @@ import type { EntrevistadoLista } from "../types/entrevistado";
 import CardEntrevistado from "./CardEntrevistado";
 import { listarEntrevistados } from "../services/entrevistados";
 
-
+import { Link } from "react-router-dom";
 
 const ListaEntrevistados = () => {
     
     const [entrevistados, setEntrevistados] = useState<EntrevistadoLista[]>([]); 
+    const [carregando, setCarregando] = useState(true); 
+    const [erro, setErro] = useState<string | null>(null);
 
     useEffect(() => {
         
@@ -16,13 +18,30 @@ const ListaEntrevistados = () => {
                 setEntrevistados(data);
             })
 
-            .catch((error) => {
+            .catch((error: unknown) => {
                 console.error('Erro na busca por entrevistados: ', error);
-            });  
+                setErro("Não foi possível carregar entrevistados");
+            }) 
+
+            .finally(() => {
+                setCarregando(false);
+            })
         
     }, []);
 
-    if (entrevistados.length !== 0) {
+    if (carregando) {
+        return <p className="p-4 text-center text-vinho font-semibold">Carregando entrevistados...</p>;
+    }
+
+    if (erro) {
+        return <p className="p-4 text-center text-vinho font-semibold">{erro}</p>;
+    }
+
+    if (entrevistados.length === 0) {
+        return <p className="p-4 text-center text-vinho font-semibold">Nenhum entrevistado encontrado.</p>;
+    }
+
+    else {
        
         return (
 
@@ -30,12 +49,17 @@ const ListaEntrevistados = () => {
 
             {entrevistados.map((item) => (
 
-                <CardEntrevistado 
-                    key={item.nome}
-                    nome={item.nome}
-                    path_foto={item.path_foto}
-                    funcao={item.funcao}
-                />
+                <Link to={`/entrevistados/${item.id}`} className="w-full">
+
+                    <CardEntrevistado 
+                        key={item.id}
+                        id={item.id}
+                        nome={item.nome}
+                        path_foto={item.path_foto}
+                        funcao={item.funcao}
+                    />
+                </Link>
+                
             ))}
            </div>
         );

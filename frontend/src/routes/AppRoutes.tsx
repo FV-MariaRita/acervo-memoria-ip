@@ -18,7 +18,7 @@ function AppRoutes() {
                 <Route path='/entrevistados' element={<Entrevistados />} />
                 <Route path='/sobre-nos' element={<SobreNos />} />
                 <Route path='/entrevistadores' element={<Entrevistadores />} />
-                <Route path='/entrevistados/eu' element={<EntrevistadoEspecifica />} />
+                <Route path={'/entrevistados/:id'} element={<EntrevistadoEspecifica  />} />
             </Route>           
         </Routes>
 

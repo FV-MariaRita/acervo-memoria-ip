@@ -1,4 +1,4 @@
-import CardEntrevistador from "../components/CardEntrevistador"
+import ListaEntrevistadores from "../components/ListaEntrevistadores"
 
 const Entrevistadores = () => {
 
@@ -26,9 +26,7 @@ const Entrevistadores = () => {
                         
 
                     <div>
-                        <CardEntrevistador />
-                        <CardEntrevistador />
-                        <CardEntrevistador />
+                        <ListaEntrevistadores />
                     </div>
                     
                 </div>                

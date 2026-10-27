@@ -1,4 +1,4 @@
-// RECEBIMENTO DE DADOS
+//TIPOS DE GET
 export interface Entrevista {
     local: string; 
     data: Date;
@@ -6,7 +6,7 @@ export interface Entrevista {
     path_transcricao: string; 
 
     sumario: Sumario[]; 
-    entrevistadores: Entrevistadores_entrevista[]; 
+    entrevistadores: Entrevistador_entrevista[]; 
 
     path_fotos_entrevista: string[]; 
     path_fotos_marcantes: string[];
@@ -21,7 +21,7 @@ export interface Sumario {
     assunto: string; 
 }
 
-export interface Entrevistadores_entrevista {
+export interface Entrevistador_entrevista {
     id: number; 
     nome: string;
 }
@@ -31,8 +31,6 @@ export interface Entrevistadores_entrevista {
 export interface EntrevistaCreate {
     local: string; 
     data: Date; 
-    path_audio: string; 
-    path_transcricao: string; 
 
     sumario: SumarioCreate[]; 
     entrevistadores: number[]; 
@@ -42,15 +40,13 @@ export interface EntrevistaCreate {
 export interface EntrevistaUpdate {
     local?: string;
     data?: Date; 
-    path_audio?: string; 
-    path_transcricao?: string; 
     
     sumario?: SumarioUpdate[]; 
     entrevistadores?: Entrevistador_entrevistaUpdate[]; 
     fotos?: Fotos_entrevistaUpdate[];
 }
 
-export interface Entrevistador_entrevistaUpdate {
+export interface Entrevistador_entrevistaCreate {
     entrevistador_id: number;
 }
 
@@ -68,7 +64,7 @@ export interface SumarioUpdate {
     id?: number; 
     tempo_segundos?: number; 
     assunto?: string; 
-    excluir?: boolean; 
+    excluir: boolean; 
 }
 
 export interface Fotos_entrevistaCreate {
@@ -80,6 +76,6 @@ export interface Fotos_entrevistaUpdate {
     id?: number; 
     categoria?: string; 
     numero?: number;
-    excluir?: boolean;
+    excluir: boolean;
 }
 

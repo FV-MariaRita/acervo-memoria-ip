@@ -4,16 +4,19 @@ import type {
     EntrevistadorLista,
     EntrevistadorCreate,
     EntrevistadorUpdate,
+    EntrevistadorNome,
 } from '../types/entrevistador';
 
-
+//PÚBLICO
 export function listarEntrevistadores(): Promise<EntrevistadorLista[]> {
     return (apiFetch<EntrevistadorLista[]>('/entrevistadores'));
 }
 
-export function criarEntrevistador (dados : EntrevistadorCreate): Promise<void> {
 
-    return apiFetch<void>('/entrevistadores', {
+//ADMIN
+export function criarEntrevistador (dados : EntrevistadorCreate): Promise<EntrevistadorNome> {
+
+    return apiFetch<EntrevistadorNome>('/admin/entrevistadores', {
         method: 'POST', 
         headers: {
             "Content-Type" : "application/json"
@@ -22,10 +25,10 @@ export function criarEntrevistador (dados : EntrevistadorCreate): Promise<void> 
     });
 }
 
-export function alterarEntrevistador(id: number, dados: EntrevistadorUpdate): Promise<void> {
+export function atualizarEntrevistador(id: number, dados: EntrevistadorUpdate): Promise<EntrevistadorLista> {
 
-    return apiFetch<void>(`entrevistadores/${id}`, {
-        method: 'POST', 
+    return apiFetch<EntrevistadorLista>(`/admin/entrevistadores/${id}`, {
+        method: 'PATCH', 
         headers: {
             "Contente-Type": "application/json"
         },
@@ -33,9 +36,9 @@ export function alterarEntrevistador(id: number, dados: EntrevistadorUpdate): Pr
     });
 } 
 
-export function excluirEntrevistador(id: number): Promise<void> {
+export function excluirEntrevistador(id: number): Promise<EntrevistadorNome> {
 
-    return apiFetch(`entrevistadores/${id}`, {
+    return apiFetch(`/admin/entrevistadores/${id}`, {
         method: 'DELETE', 
         headers: {
             "Content-Type": "application/json"

@@ -8,6 +8,7 @@ const CardEntrevistado = ({nome, path_foto, funcao}: EntrevistadoLista) => {
                 
                 <img 
                     src={path_foto} 
+                    alt={`Foto de ${nome}`}
                     className="rounded-full w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-cover shrink-0"
                 />
 

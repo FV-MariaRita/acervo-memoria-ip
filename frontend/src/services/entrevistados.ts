@@ -1,48 +1,63 @@
-import { apiFetch } from "./api";
-
 import type { 
-    EntrevistadoCreate,
-    EntrevistadoEntrevista,
+    EntrevistadoComEntrevistaCreate, 
+    EntrevistadoEntrevista, 
     EntrevistadoLista, 
+    EntrevistadoNome,
     EntrevistadoUpdate
 } from "../types/entrevistado";
 
+import { apiFetch } from "./api";
+
+//PÚBLICO
 export function listarEntrevistados(): Promise<EntrevistadoLista[]> {
-
-    return apiFetch<EntrevistadoLista[]>("/entrevistados");
+    return (
+        apiFetch<EntrevistadoLista[]>('/entrevistados')
+    );
 }
 
-export function buscarEntrevistados (id:number): Promise<EntrevistadoLista> {
-
-    return apiFetch<EntrevistadoLista>(`/entrevistados/${id}`);
+export function listarEntrevistadoId(id: number): Promise<EntrevistadoEntrevista> {
+    return (
+        apiFetch<EntrevistadoEntrevista>(`/entrevistados/${id}`)
+    );
 }
 
-export function criarEntrevistado (dados: EntrevistadoCreate): Promise <void> {
-
-    return apiFetch<void>("/entrevistados", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }, 
-        body: JSON.stringify(dados)
-    });
+//ADMIN
+export function criarEntrevistadoComEntrevista (dados: EntrevistadoComEntrevistaCreate): Promise<EntrevistadoNome> {
+    return (
+        apiFetch<EntrevistadoNome>('/admin/entrevistado', {
+            
+            method: 'POST', 
+            headers: {
+                "Content-Type": "application/json"
+            }, 
+            body: JSON.stringify(dados)
+        })
+    );
 }
 
-export function alterarEntrevistado (id: number, dados: EntrevistadoUpdate): Promise<EntrevistadoEntrevista> {
+export function atualizarEntrevistado (id: number, dados: EntrevistadoUpdate): Promise<EntrevistadoUpdate> {
+    return (
+        apiFetch<EntrevistadoUpdate>(`/admin/entrevistado/${id}`, {
 
-    return apiFetch<EntrevistadoEntrevista>(`/entrevistados/${id}`, {
-
-        method: "PATCH", 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-    });
+            method: 'PATCH', 
+            headers: {
+                "Content-Type": "application/json"
+            },  
+            body: JSON.stringify(dados)
+        })
+    );
 }
 
-export function excluirEntrevistado (id: number): Promise<void> {
-    
-    return apiFetch<void>(`/entrevistados/${id}`, {
-        method: "DELETE"
-    });
+
+export function excluirEntrevistado (id: number): Promise<EntrevistadoNome> {
+   
+    return (
+        apiFetch<EntrevistadoNome>(`/admin/entrevistados/${id}`, {
+
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    );
 }

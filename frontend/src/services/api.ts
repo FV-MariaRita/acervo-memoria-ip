@@ -1,22 +1,42 @@
-const API_URL = "http://localhost:8000"; // URL base da API
+const API_URL = "http://localhost:8000";
 
 export async function apiFetch<T>(
     endpoint: string,
     options?: RequestInit
 ): Promise<T> {
-    const response = await fetch(`${API_URL}${endpoint}`, options);
 
-    if (!response.ok) {
-        const mensagem = await response.text();
+    if (options) {
+        const response = await fetch(`${API_URL}${endpoint}`, options);        
+        if (!response.ok) {
+            const mensagem = await response.text();
 
-        throw new Error(
-            mensagem || "Erro ao acessar o backend."
-        );
+            throw new Error(
+                mensagem || `Erro na requisição: ${response.status}`
+            );
+        }
+
+        if (response.status === 204) {
+            return undefined as T;
+        }
+
+        return response.json() as Promise<T>;
     }
+    
+    else {
+        const response = await fetch(`${API_URL}${endpoint}`);        
+        if (!response.ok) {
+            const mensagem = await response.text();
 
-    if (response.status === 204) {
-        return undefined as T;
-    }
+            throw new Error(
+                mensagem || `Erro na requisição: ${response.status}`
+            );
+        }
 
-    return response.json() as Promise<T>;
+        if (response.status === 204) {
+            return undefined as T;
+        }
+
+        return response.json() as Promise<T>;
+    }  
+
 }

@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 @router.get(
-    "/entrevistados/{entrevistado_id}/",
+    "/entrevistas/{entrevistado_id}/",
     response_model = list[EntrevistaResponse]
 )
 def mostrar_entrevistas (
