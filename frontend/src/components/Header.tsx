@@ -44,6 +44,9 @@ const Header = () =>  {
                 `}>
 
                 <div className="flex items-center gap-4 md:gap-8">
+                    <Link to="/" className='hover:underline whitespace-nowrap' onClick={() => setAberto(false)}>
+                        Início
+                    </Link>
                     <Link to="/entrevistados" className="hover:underline whitespace-nowrap" onClick={() => setAberto(false)}>
                         Entrevistados
                     </Link>
