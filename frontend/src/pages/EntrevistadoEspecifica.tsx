@@ -195,34 +195,38 @@ const EntrevistadoEspecifica = () => {
                   </h2>
                 </div>
               </div>
+              
+              {(entrevistaAtual.path_fotos_entrevista.length > 0 || entrevistaAtual.path_fotos_marcantes.length > 0) && (
 
-              <div className="w-full h-screen flex flex-col overflow-hidden">
-                {entrevistaAtual.path_fotos_entrevista.length > 0 && (
-                  <div className="w-full bg-verde py-12 px-6 h-1/2">
-                    <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
-                      <h2 className="text-[1.5rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-right">
-                        Registros do encontro
-                      </h2>
-                      <div className="w-full md:w-1/2 max-w-md">
-                        <Carrossel path_fotos={entrevistaAtual.path_fotos_entrevista} />
+                <div className="w-full min-h-screen-fit flex flex-col overflow-hidden">
+                  {entrevistaAtual.path_fotos_entrevista.length > 0 && (
+                    <div className="w-full bg-verde py-12 px-6 h-1/2">
+                      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
+                        <h2 className="text-[1.5rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-right">
+                          Registros do encontro
+                        </h2>
+                        <div className="w-full md:w-1/2 max-w-md">
+                          <Carrossel path_fotos={entrevistaAtual.path_fotos_entrevista} />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-                
-                {entrevistaAtual.path_fotos_marcantes.length > 0 && (
-                  <div className="w-full bg-vinho py-12 px-6 h-1/2">
-                    <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
-                      <div className="w-full md:w-1/2 max-w-md">
-                        <Carrossel path_fotos={entrevistaAtual.path_fotos_marcantes} />
+                  )}
+                  
+                  {entrevistaAtual.path_fotos_marcantes.length > 0 && (
+                    <div className="w-full bg-vinho py-12 px-6 h-1/2">
+                      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
+                        <div className="w-full md:w-1/2 max-w-md">
+                          <Carrossel path_fotos={entrevistaAtual.path_fotos_marcantes} />
+                        </div>
+                        <h2 className="text-[1.5rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-left">
+                          Fotos marcantes
+                        </h2>
                       </div>
-                      <h2 className="text-[1.5rem] font-semibold text-branco font-serif md:w-1/3 text-center md:text-left">
-                        Fotos marcantes
-                      </h2>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
+              
             </section>
           )}
         </div> 

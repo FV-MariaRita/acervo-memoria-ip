@@ -6,13 +6,19 @@
 
   /* Cores padrao */ 
   --color-verde: #2e7d5b; 
-  --color-verde-escuro: #286E50;
   --color-marrom: #7a5a3a;
   --color-vinho: #7c4a52;
   --color-ocre: #b8923f;
   --color-grafite: #2d2d2d;
   --color-branco: #FFF; 
+
+  /*Cores hover */
   --color-brancoPapel-hover: #E4D9C0;
+  --color-verde-hover: #286E50;
+  --color-marrom-hover: #6B4F33;
+  --color-vinho-hover: #6B4F33;
+  --color-ocre-hover: #A28037;
+  --color-grafite-hover: #282828;
 
   /* Fontes */
   --font-title: "Chau Philomene One", sans-serif; 
