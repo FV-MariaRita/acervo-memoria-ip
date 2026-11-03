@@ -9,6 +9,12 @@ logger = logging.getLogger(__name__)
 class ErroArmazenamento(Exception):
     """Erro ao interagir com o armazenamento B2."""
 
+class FileNotFound(Exception):
+    """Arquivo não encontrado."""
+
+class ErroUpload(Exception):
+    """Erro"""
+
 @lru_cache(maxsize=1)
 def get_b2_api():
     key_id = os.getenv("B2_KEY_ID")
@@ -65,9 +71,9 @@ from b2sdk.v2 import InMemoryAccountInfo, B2Api
 
 def delete_file (b2_path: str) -> None:
     try:
-        for arquivo, _ in get_bucket().list_file_versions(
-            start_filename=b2_path,
-            max_entries=100
+        for arquivo in get_bucket().list_file_versions(
+            file_name=b2_path,
+            fetch_count=100
         ):
             if arquivo.file_name == b2_path:
                 get_bucket().delete_file_version(
@@ -83,7 +89,7 @@ def delete_file (b2_path: str) -> None:
     except FileNotFoundError:
         raise
     except Exception as e:
-        raise ErroUpload("Falha ao excluir arquivo do B2") from e
+        raise #ErroUpload("Falha ao excluir arquivo do B2") from e
 
 def gerar_url(b2_path: str) -> str:
     try:

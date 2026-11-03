@@ -7,7 +7,7 @@ from pydantic import ValidationError
 # entrevistador
 from app.schemas.entrevistador import EntrevistadorCreate, EntrevistadorUpdate, EntrevistadorNomeResponse, EntrevistadorListaResponse
 from app.repositories.entrevistador import atualizar_entrevistador, deletar_entrevistador
-from app.services.entrevistador import service_criar_entrevistador
+from app.services.entrevistador import service_criar_entrevistador, service_excluir_entrevistador, service_atualizar_entrevistador
 from app.models.entrevistador import Entrevistador
 #from app.services.auth import require_admin
 
@@ -53,23 +53,31 @@ def cadastrar_entrevistador (
 )
 def editar_entrevistador (
     id: int,
-    dados: EntrevistadorUpdate,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    dados: Annotated[str, Form()],
+    foto: Annotated[UploadFile | None, File()] = None,
     ):
 
-    entrevistador = atualizar_entrevistador(
-        id = id, 
-        dados = dados, 
-        session = session
-        )
-    
-    if not entrevistador:
-        raise HTTPException(
-            status_code = 404,
-            detail = "Entrevistador não encontrado"
+    try:
+        dados_entrevistador = EntrevistadorUpdate.model_validate_json(
+            dados
         )
 
-    return entrevistador
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=e.errors(
+                include_input=False,
+                include_context=False
+            )
+        )
+
+    return service_atualizar_entrevistador(
+        entrevistador_id = id,
+        session = session,
+        dados = dados_entrevistador,
+        foto = foto
+    )
 
 
 # delete
@@ -82,9 +90,10 @@ def excluir_entrevistador (
     session: Annotated[Session, Depends(get_session)]
     ):
 
-    entrevistador_excluido = deletar_entrevistador(
-        id = id, 
-        session = session)
+    entrevistador_excluido = service_excluir_entrevistador(
+        entrevistador_id = id, 
+        session = session
+    )
 
     if not entrevistador_excluido:
         raise HTTPException(

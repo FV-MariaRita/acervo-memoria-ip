@@ -27,7 +27,7 @@ router = APIRouter(
     "/entrevistado",
     response_model = EntrevistadoNomeResponse #colocar dados de entrevista + entrevistado
     )
-async def cadastrar_entrevistado_com_entrevista (
+def cadastrar_entrevistado_com_entrevista (
     dados: Annotated[str, Form()],
     audio: Annotated[UploadFile, File()],
     transcricao: Annotated[UploadFile, File()], 

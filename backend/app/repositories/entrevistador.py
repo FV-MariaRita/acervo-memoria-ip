@@ -45,8 +45,7 @@ def atualizar_entrevistador (
         setattr(entrevistador, atributo, valor)
 
     session.add(entrevistador)
-    session.commit()
-    session.refresh(entrevistador)
+    session.flush()
 
     return entrevistador
 
@@ -61,6 +60,5 @@ def deletar_entrevistador (
         return None
 
     session.delete(entrevistador)
-    session.commit()
 
     return entrevistador

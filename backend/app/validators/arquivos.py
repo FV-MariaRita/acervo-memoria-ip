@@ -25,7 +25,7 @@ MAX_ALTURA = 6000
 
 PROPORCOES_FOTO = {
     "entrevistado": (1, 1),
-    "entrevistador": (3, 4),
+    "entrevistador": (181, 240),
     "entrevista": (5, 4),
 }
 
