@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
+from typing import Annotated
 from sqlmodel import Session
 from app.database.connection import get_session
+from pydantic.json_schema import SkipJsonSchema
+from pydantic import ValidationError
 
 # entrevistado
 from app.schemas.entrevistado import EntrevistadoComEntrevistaCreate, EntrevistadoUpdate, EntrevistadoNomeResponse, EntrevistadoEntrevistaResponse
 from app.repositories.entrevistado import atualizar_entrevistado, deletar_entrevistado
-from app.services.entrevistados import criar_entrevistado_com_entrevista
+from app.services.entrevista import service_cadastrar_entrevista
 from app.models.entrevistado import Entrevistado
 
 # complemento da entrevista
@@ -25,29 +28,36 @@ router = APIRouter(
     response_model = EntrevistadoNomeResponse #colocar dados de entrevista + entrevistado
     )
 async def cadastrar_entrevistado_com_entrevista (
-    dados: str = Form(...), 
-    foto_entrevistado: UploadFile = File(...),
-    fotos_entrevista: list[UploadFile] = File(...),
-    fotos_marcantes: list[UploadFile] = File(...),
-    audio: UploadFile = File(...),
-    trasncricao: UploadFile = File(...),
-    session: Session = Depends(get_session)
+    dados: Annotated[str, Form()],
+    audio: Annotated[UploadFile, File()],
+    transcricao: Annotated[UploadFile, File()], 
+    foto_entrevistado: Annotated[UploadFile, File()],
+    session: Annotated[Session, Depends(get_session)],
+    fotos_entrevista: Annotated[list[UploadFile] | None, File()] = None,
+    fotos_marcantes: Annotated[list[UploadFile] | None, File()] = None
     ):
 
-    dados = EntrevistadoComEntrevistaCreate.model_validate_json(
-        dados
-    )
-
-    entrevistado = await criar_entrevistado_com_entrevista (
-        dados = dados,
-        session = session
-    )
-
-    if not entrevistado:
-        raise HTTPException(
-            status_code = 1,
-            detail = ""
+    try:
+        dados = EntrevistadoComEntrevistaCreate.model_validate_json(
+            dados
         )
+
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=e.errors()
+        )
+
+    entrevistado, entrevista = service_cadastrar_entrevista(
+        dados_entrevista=dados.entrevista,
+        dados_entrevistado=dados.entrevistado,
+        foto_entrevistado=foto_entrevistado,
+        audio=audio,
+        transcricao=transcricao,
+        fotos_entrevista=fotos_entrevista,
+        fotos_marcantes=fotos_marcantes,
+        session=session
+    )
 
     return entrevistado
 
@@ -60,7 +70,7 @@ async def cadastrar_entrevistado_com_entrevista (
 def editar_entrevistado (
     id: int,
     dados: EntrevistadoUpdate,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
     entrevistado = atualizar_entrevistado(
@@ -85,7 +95,7 @@ def editar_entrevistado (
     )
 def excluir_entrevistado (
     id: int,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
     entrevistado_excluido = deletar_entrevistado(

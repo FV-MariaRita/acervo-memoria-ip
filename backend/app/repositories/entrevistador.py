@@ -24,8 +24,7 @@ def criar_entrevistador (
     ) -> Entrevistador:
 
     session.add(entrevistador)
-    session.commit()
-    session.refresh(entrevistador)
+    session.flush()
 
     return entrevistador
 

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
+from typing import Annotated
 from sqlmodel import Session
 from app.database.connection import get_session
 from app.schemas.entrevistador import EntrevistadorNomeResponse, EntrevistadorListaResponse
-from app.repositories.entrevistador import listar_entrevistadores, buscar_entrevistadores
+from app.services.entrevistador import service_mostrar_entrevistadores
 
 router = APIRouter(
     prefix="",
@@ -14,7 +15,7 @@ router = APIRouter(
     response_model = list[EntrevistadorListaResponse]
     )
 def mostrar_entrevistadores (
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
-    return listar_entrevistadores(session = session)
+    return service_mostrar_entrevistadores(session = session)

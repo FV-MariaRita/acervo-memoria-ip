@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File,Form
+from typing import Annotated
 from sqlmodel import Session
 from app.database.connection import get_session
+from pydantic import ValidationError
 
 # entrevistador
 from app.schemas.entrevistador import EntrevistadorCreate, EntrevistadorUpdate, EntrevistadorNomeResponse, EntrevistadorListaResponse
-from app.repositories.entrevistador import criar_entrevistador, atualizar_entrevistador, deletar_entrevistador
+from app.repositories.entrevistador import atualizar_entrevistador, deletar_entrevistador
+from app.services.entrevistador import service_criar_entrevistador
 from app.models.entrevistador import Entrevistador
 #from app.services.auth import require_admin
 
@@ -21,13 +24,26 @@ router = APIRouter(
     response_model = EntrevistadorNomeResponse
     )
 def cadastrar_entrevistador (
-    dados: EntrevistadorCreate, 
-    session: Session = Depends(get_session)
+    dados: Annotated[str, Form()],
+    foto: Annotated[UploadFile, File()],
+    session: Annotated[Session, Depends(get_session)]
     ):
 
-    entrevistador = Entrevistador(**dados.model_dump())
+    try:
+        dados_entrevistador = EntrevistadorCreate.model_validate_json(
+            dados
+        )
 
-    return criar_entrevistador(entrevistador = entrevistador, session = session)
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=e.errors(
+                include_input=False,
+                include_context=False
+            )
+        )
+
+    return service_criar_entrevistador(dados = dados_entrevistador, foto = foto, session = session)
 
 
 # update
@@ -38,7 +54,7 @@ def cadastrar_entrevistador (
 def editar_entrevistador (
     id: int,
     dados: EntrevistadorUpdate,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
     entrevistador = atualizar_entrevistador(
@@ -63,7 +79,7 @@ def editar_entrevistador (
     )
 def excluir_entrevistador (
     id: int,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
     entrevistador_excluido = deletar_entrevistador(

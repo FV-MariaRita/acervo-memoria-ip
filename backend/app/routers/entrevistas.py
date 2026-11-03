@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
+from typing import Annotated
 from app.database.connection import get_session
 from sqlmodel import Session
 from app.schemas.entrevista import EntrevistaResponse
-from app.services.entrevistados import mostrar_entrevistas_do_entrevistado
+from app.services.entrevistado import mostrar_entrevistas_do_entrevistado
 
 router = APIRouter(
     prefix="",
@@ -15,7 +16,7 @@ router = APIRouter(
 )
 def mostrar_entrevistas (
     entrevistado_id: int,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
 ):
     
     entrevistas = mostrar_entrevistas_do_entrevistado(

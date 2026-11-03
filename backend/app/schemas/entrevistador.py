@@ -29,7 +29,7 @@ class EntrevistadorUpdate (SQLModel):
 class EntrevistadorListaResponse (SQLModel):
     nome: str
     bio: str
-    path_foto: str
+    path_foto: str #url do b2, nao path do banco
 
 class EntrevistadorNomeResponse (SQLModel):
     nome: str

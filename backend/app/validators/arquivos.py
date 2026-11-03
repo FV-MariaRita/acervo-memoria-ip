@@ -2,7 +2,12 @@ from io import BytesIO
 
 from fastapi import HTTPException, UploadFile
 from PIL import Image, UnidentifiedImageError
+from pydantic import BaseModel
 
+class ArquivoValidado(BaseModel):
+    extensao: str
+    content_type: str
+    conteudo: bytes
 
 # foto
 
@@ -47,7 +52,7 @@ def validar_formato_foto(conteudo: bytes) -> str:
                     status_code=415,
                     detail="Formato de foto não permitido."
                 )
-            return image.format
+            return imagem.format
 
     except HTTPException: #raise a http exception que houve
         raise
@@ -123,8 +128,7 @@ def validar_dimensoes_foto(
             detail="Não foi possível verificar as dimensões da foto."
         )
 
-
-async def validar_foto(
+def validar_foto(
     arquivo: UploadFile,
     tipo_foto: str,
 ) -> bytes:
@@ -132,7 +136,7 @@ async def validar_foto(
     if tipo_foto not in PROPORCOES_FOTO:
         raise ValueError(f"Tipo de foto desconhecido: {tipo_foto}")
 
-    conteudo = await arquivo.read(MAX_TAMANHO_FOTO + 1)
+    conteudo = arquivo.file.read(MAX_TAMANHO_FOTO + 1)
 
     validar_tamanho_foto(conteudo)
     formato = validar_formato_foto(conteudo)
@@ -141,7 +145,7 @@ async def validar_foto(
 
     extensao, content_type = FORMATOS_FOTO[formato]
 
-    await arquivo.seek(0)
+    arquivo.file.seek(0)
 
     return ArquivoValidado(
         extensao=extensao,
@@ -149,6 +153,90 @@ async def validar_foto(
         conteudo=conteudo,
     )
 
+# lista de fotos da entrevista
+def validar_metadados_fotos(fotos):
+    metadados_entrevista = [
+        foto for foto in fotos
+        if foto.categoria == "entrevista"
+    ]
+
+    metadados_marcantes = [
+        foto for foto in fotos
+        if foto.categoria == "marcantes"
+    ]
+
+    if len(metadados_entrevista) > 6:
+        raise HTTPException(
+            status_code=422,
+            detail="O limite é de 6 fotos da entrevista."
+        )
+
+    if len(metadados_marcantes) > 6:
+        raise HTTPException(
+            status_code=422,
+            detail="O limite é de 6 fotos marcantes."
+        )
+
+    categorias_permitidas = {"entrevista", "marcantes"}
+
+    if any(foto.categoria not in categorias_permitidas for foto in fotos):
+        raise HTTPException(
+            status_code=422,
+            detail="Categoria de foto inválida."
+        )
+
+    combinacoes = [
+        (foto.categoria, foto.numero)
+        for foto in fotos
+    ]
+
+    if len(combinacoes) != len(set(combinacoes)):
+        raise HTTPException(
+            status_code=422,
+            detail="Existem fotos com categoria e número duplicados."
+        )
+
+    ids = [foto.arquivo_id for foto in fotos]
+
+    if len(ids) != len(set(ids)):
+        raise HTTPException(
+            status_code=422,
+            detail="Existem identificadores duplicados nos metadados das fotos."
+        )
+
+    return metadados_entrevista, metadados_marcantes
+
+def associar_arquivos_fotos(arquivos, metadados, categoria):
+    arquivos_associados = {}
+
+    for arquivo in arquivos:
+        try:
+            arquivo_id = UUID(arquivo.filename)
+        except (ValueError, TypeError):
+            raise HTTPException(
+                status_code=422,
+                detail=f"Identificador inválido em uma foto da categoria {categoria}."
+            )
+
+        if arquivo_id in arquivos_associados:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Identificador duplicado nas fotos da categoria {categoria}."
+            )
+
+        arquivos_associados[arquivo_id] = validar_foto(
+            arquivo, "entrevista"
+        )
+
+    ids_metadados = {foto.arquivo_id for foto in metadados}
+
+    if ids_metadados != set(arquivos_associados):
+        raise HTTPException(
+            status_code=422,
+            detail=f"Os metadados e os arquivos das fotos da categoria {categoria} não correspondem."
+        )
+
+    return arquivos_associados
 # audio
 
 import json
@@ -179,7 +267,7 @@ def validar_formato_audio(dados: dict) -> None:
     formato = dados.get("format", {}).get("format_name", "")
     formatos = set(formato.split(","))
 
-    if "wav" not in formatos and "mp4" not in formatos:
+    if "wav" not in formatos and "mp3" not in formatos:
         raise HTTPException(
             status_code=415,
             detail="Formato não permitido. Envie um arquivo WAV ou MP4.",
@@ -316,7 +404,7 @@ def validar_integridade_audio(caminho: str) -> None:
         )
 
 
-async def validar_audio(arquivo: UploadFile) -> None:
+def validar_audio(arquivo: UploadFile) -> None:
     # valida sem colocar o audio todo na memoria
     tamanho = 0
     caminho_temporario = None
@@ -330,7 +418,7 @@ async def validar_audio(arquivo: UploadFile) -> None:
             caminho_temporario = temporario.name
 
             while True:
-                bloco = await arquivo.read(TAMANHO_BLOCO)
+                bloco = arquivo.file.read(TAMANHO_BLOCO)
 
                 if not bloco:
                     break
@@ -348,8 +436,14 @@ async def validar_audio(arquivo: UploadFile) -> None:
         validar_duracao_audio(dados)
         validar_integridade_audio(caminho_temporario)
 
+        return ArquivoValidado(
+            extensao=extensao,
+            content_type=content_type,
+            conteudo=conteudo
+        )
+        
     finally:
-        await arquivo.seek(0)
+        arquivo.file.seek(0)
 
         if caminho_temporario:
             Path(caminho_temporario).unlink(missing_ok=True)
@@ -408,8 +502,8 @@ def validar_integridade_pdf(conteudo: bytes) -> None:
         )
 
 
-async def validar_pdf(arquivo: UploadFile) -> bytes:
-    conteudo = await arquivo.read(MAX_TAMANHO_PDF + 1)
+def validar_pdf(arquivo: UploadFile) -> bytes:
+    conteudo = arquivo.file.read(MAX_TAMANHO_PDF + 1)
 
     try:
         validar_tamanho_pdf(conteudo)
@@ -422,4 +516,4 @@ async def validar_pdf(arquivo: UploadFile) -> bytes:
             conteudo=conteudo,
         )
     finally:
-        await arquivo.seek(0)
+        arquivo.file.seek(0)

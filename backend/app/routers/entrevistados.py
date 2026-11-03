@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
+from typing import Annotated
 from sqlmodel import Session
 from app.database.connection import get_session
 from app.schemas.entrevistado import EntrevistadoEntrevistaResponse, EntrevistadoListaResponse
-from app.repositories.entrevistado import listar_entrevistados, buscar_entrevistado
+from app.services.entrevistado import service_mostrar_entrevistados, service_mostrar_entrevistado
 
 router = APIRouter(
     prefix="",
@@ -14,10 +15,10 @@ router = APIRouter(
     response_model = list[EntrevistadoListaResponse]
     )
 def mostrar_entrevistados (
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
-    return listar_entrevistados(session = session)
+    return service_mostrar_entrevistados(session = session)
 
 @router.get(
     "/entrevistados/{id}",
@@ -25,10 +26,10 @@ def mostrar_entrevistados (
     )
 def mostrar_entrevistado (
     id: int,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
-    entrevistado = buscar_entrevistado(id = id, session = session)
+    entrevistado = service_mostrar_entrevistado(entrevistado_id = id, session = session)
 
     if not entrevistado:
         raise HTTPException(

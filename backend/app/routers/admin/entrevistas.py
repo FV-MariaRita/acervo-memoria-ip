@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from typing import Annotated
 from sqlmodel import Session
 from app.database.connection import get_session
+from pydantic import ValidationError
 
 # entrevistas
 from app.schemas.entrevista import EntrevistaCreate, EntrevistaUpdate, EntrevistaDataResponse, EntrevistaResponse
@@ -24,21 +26,39 @@ router = APIRouter(
     )
 def cadastrar_entrevista (
     entrevistado_id: int,
-    dados: EntrevistaCreate, 
-    session: Session = Depends(get_session)
+    dados: Annotated[str, Form()],
+    audio: Annotated[UploadFile, File()],
+    transcricao: Annotated[UploadFile, File()], 
+    session: Annotated[Session, Depends(get_session)],
+    fotos_entrevista: Annotated[list[UploadFile] | None, File()] = None,
+    fotos_marcantes: Annotated[list[UploadFile] | None, File()] = None
     ):
 
-    entrevista = criar_entrevista_completa(
-        entrevistado_id = entrevistado_id,
-        dados = dados,
-        session = session
+    try:
+        dados_entrevista = EntrevistaCreate.model_validate_json(
+            dados
         )
 
-    if not entrevista:
+    except ValidationError as e:
         raise HTTPException(
-            status_code = 404,
-            detail = "Erro ao cadastrar entrevista"
+            status_code=422,
+            detail=e.errors(
+                include_input=False,
+                include_context=False
+            )
         )
+
+    entrevistado, entrevista = service_cadastrar_entrevista(
+        entrevistado_id=entrevistado_id,
+        dados_entrevista=dados_entrevista,
+        audio=audio,
+        transcricao=transcricao,
+        fotos_entrevista=fotos_entrevista,
+        fotos_marcantes=fotos_marcantes,
+        session=session
+    )
+
+    # add try except
 
     return entrevista
 
@@ -51,7 +71,7 @@ def cadastrar_entrevista (
 def editar_entrevista (
     entrevista_id: int,
     dados: EntrevistaUpdate,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
     entrevista = atualizar_entrevista_completa(
@@ -76,7 +96,7 @@ def editar_entrevista (
     )
 def excluir_entrevista (
     entrevista_id: int,
-    session: Session = Depends(get_session)
+    session: Annotated[Session, Depends(get_session)]
     ):
 
     entrevista_excluida = deletar_entrevista(

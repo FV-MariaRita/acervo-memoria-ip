@@ -24,6 +24,7 @@ def criar_entrevistado (
     ) -> Entrevistado:
 
     session.add(entrevistado)
+    session.flush()
 
     return entrevistado
 

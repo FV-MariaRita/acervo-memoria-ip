@@ -60,3 +60,44 @@ def upload_file(
         raise ErroArmazenamento(
             "Não foi possível enviar o arquivo."
         ) from exc
+
+from b2sdk.v2 import InMemoryAccountInfo, B2Api
+
+def delete_file (b2_path: str) -> None:
+    try:
+        for arquivo, _ in get_bucket().list_file_versions(
+            start_filename=b2_path,
+            max_entries=100
+        ):
+            if arquivo.file_name == b2_path:
+                get_bucket().delete_file_version(
+                    file_id=arquivo.id_,
+                    file_name=arquivo.file_name
+                )
+                return
+
+        raise FileNotFoundError(
+            f"Arquivo não encontrado no B2: {b2_path}"
+        )
+
+    except FileNotFoundError:
+        raise
+    except Exception as e:
+        raise ErroUpload("Falha ao excluir arquivo do B2") from e
+
+def gerar_url(b2_path: str) -> str:
+    try:
+        autorizacao = get_bucket().get_download_authorization(
+            file_name_prefix=b2_path,
+            valid_duration_in_seconds=3600
+        )
+
+        url_base = get_bucket().get_download_url(b2_path)
+
+        return f"{url_base}?Authorization={autorizacao}"
+
+    except Exception as exc:
+        logger.exception("Erro ao gerar URL de acesso à foto no B2")
+        raise ErroArmazenamento(
+            "Não foi possível gerar a URL da foto."
+        ) from exc

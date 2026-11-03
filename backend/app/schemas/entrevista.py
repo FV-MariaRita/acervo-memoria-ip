@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field
 from datetime import date
-from pydantic import PositiveInt
+from pydantic import PositiveInt, NonNegativeInt
+from uuid import UUID
 
 from app.validators.string import NonBlankString
 from app.validators.geral import DataNaoFutura
@@ -48,7 +49,7 @@ class Entrevistador_entrevistaUpdate (SQLModel):
     remover: list[PositiveInt]
 
 class SumarioCreate (SQLModel):
-    tempo_segundos: PositiveInt
+    tempo_segundos: NonNegativeInt
     assunto: NonBlankString = Field(
         min_length=1, 
         max_length=100
@@ -65,6 +66,7 @@ class SumarioUpdate (SQLModel):
     excluir: bool = False
 
 class Fotos_entrevistaCreate (SQLModel):
+    arquivo_id: UUID
     categoria: NonBlankString = Field(
         min_length=1,
         max_length=20
