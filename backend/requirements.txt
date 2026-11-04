@@ -9,3 +9,4 @@ b2sdk
 pillow
 python-multipart
 pypdf
+email-validator

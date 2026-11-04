@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useRef, useState, useEffect } from "react";
 
 import Carrossel from "../components/Carrossel";
@@ -12,6 +12,9 @@ import { mostrarEntrevista } from "../services/entrevista";
 import { listarEntrevistadoId } from "../services/entrevistados";
 
 const EntrevistadoEspecifica = () => {
+
+  const navigate = useNavigate(); 
+  
   const { id } = useParams<{ id: string }>(); 
 
   const [entrevistado, setEntrevistado] = useState<EntrevistadoEntrevista | null>(null); 
@@ -186,12 +189,20 @@ const EntrevistadoEspecifica = () => {
 
                   <h2 className="text-[1.2rem] font-bold text-ocre font-serif flex flex-row gap-3 items-center mt-2">
                     Deseja ter acesso à transcrição?
-                    <Link
-                      to="/solicitar-transcricao"
+                    
+
+                    
+                    <button
+                      type="button"
                       className="text-vinho hover:bg-brancoPapel-hover px-2 rounded-2xl cursor-pointer"
+                      onClick={() =>
+                        navigate(
+                          `/entrevistados/${id}/entrevista/${entrevistaAtual.data}/solicitar-transcricao`
+                        )
+                      }
                     >
                       Solicite acesso
-                    </Link>
+                    </button>
                   </h2>
                 </div>
               </div>

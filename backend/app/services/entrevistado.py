@@ -50,7 +50,7 @@ def service_mostrar_entrevistado(
 ) -> EntrevistadoEntrevistaResponse | None:
 
     entrevistado = buscar_entrevistado(
-        id = entrevistad_id,
+        id = entrevistado_id,
         session = session
     )
 

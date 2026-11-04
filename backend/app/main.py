@@ -7,7 +7,7 @@ from app.routers.admin import (
     entrevistadores as admin_entrevistadores,
     entrevistados as admin_entrevistados
 )
-from fastapi import FastAPI
+
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Acervo de História Oral do IP")
@@ -27,6 +27,7 @@ async def root():
 
 origens_permitidas = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173"
 ]
 
 app.add_middleware(

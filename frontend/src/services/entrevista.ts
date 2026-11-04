@@ -3,10 +3,10 @@ import type { Entrevista } from "../types/entrevista";
 
 
 //PÚBLICO 
-export function mostrarEntrevista (entrevistador_id: number): Promise<Entrevista[]> {
+export function mostrarEntrevista (entrevistado_id: number): Promise<Entrevista[]> {
     
     return (
-        apiFetch<Entrevista[]>(`/entrevistas/${entrevistador_id}`)
+        apiFetch<Entrevista[]>(`/entrevistas/${entrevistado_id}`)
     );
 }
 

@@ -2,11 +2,6 @@ import CadastroEntrevistadoForm from "../components/CadastroEntrevistadoForm";
 
 const CadastroEntrevistado = () => {
 
-    const listaEntrevistados = [
-        { id: 1, nome: "Ricardo Funari" },
-        { id: 2, nome: "Dante Gastaldani" },
-    ];
-
     return (
         <div className="flex flex-col items-center mx-10 md:mx-24">
 
@@ -20,9 +15,7 @@ const CadastroEntrevistado = () => {
                     Cadastro do entrevistado
                 </div>
 
-                <CadastroEntrevistadoForm
-                    listaEntrevistados={listaEntrevistados}
-                />
+                <CadastroEntrevistadoForm />
 
             </div>
         </div>

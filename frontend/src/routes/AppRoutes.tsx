@@ -9,6 +9,7 @@ import EntrevistadoEspecifica from '../pages/EntrevistadoEspecifica';
 import Login from '../pages/Login';
 import ProtectedRoutes from './ProtectedRoutes';
 import Teste from '../pages/Teste';
+import Solicitacoes from '../pages/SolicitacaoTranscricao';
 import Painel from '../pages/Painel';
 import CadastroEntrevista from '../pages/CadastroEntrevista';
 import CadastroEntrevistado from '../pages/CadastroEntrevistado';
@@ -23,6 +24,7 @@ function AppRoutes() {
                 <Route path='/sobre-nos' element={<SobreNos />} />
                 <Route path='/entrevistadores' element={<Entrevistadores />} />
                 <Route path={'/entrevistados/:id'} element={<EntrevistadoEspecifica  />} />
+
                 <Route path='/login' element={<Login />} />
                 <Route element={<ProtectedRoutes />}>
                     <Route path='/admin' element={<Teste />} />

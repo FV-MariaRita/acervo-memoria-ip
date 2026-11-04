@@ -1,12 +1,6 @@
 
 import React, { useEffect, useState } from "react";
 import { X, ImagePlus } from "lucide-react";
-import SelectEntrevistado from "./SelectEntrevistado";
-
-interface Entrevistado {
-  id: number;
-  nome: string;
-}
 
 interface EntrevistadoCreate {
   nome: string;
@@ -15,16 +9,13 @@ interface EntrevistadoCreate {
 }
 
 interface Props {
-  listaEntrevistados: Entrevistado[];
   onCadastroSucesso?: () => void;
 }
 
 const CadastroEntrevistadoForm = ({
-  listaEntrevistados,
   onCadastroSucesso,
 }: Props) => {
-  const [entrevistadoId, setEntrevistadoId] =
-    useState<number | null>(null);
+  
 
   const [dadosEntrevistado, setDadosEntrevistado] =
     useState<EntrevistadoCreate>({
@@ -64,11 +55,6 @@ const CadastroEntrevistadoForm = ({
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-
-    if (entrevistadoId !== null) {
-      alert("Um entrevistado existente já foi selecionado.");
-      return;
-    }
 
     if (!foto) {
       alert("Selecione uma foto do entrevistado.");
@@ -144,19 +130,7 @@ const CadastroEntrevistadoForm = ({
 
         <section className="flex flex-col gap-4">
 
-          <div className="flex bg-verde text-brancoPapel
-                          text-center text-xl tracking-wide
-                          font-bold font-title rounded p-3">
-            Cadastro do entrevistado
-          </div>
-
-          <SelectEntrevistado
-            lista={listaEntrevistados}
-            selecionado={entrevistadoId}
-            onChange={setEntrevistadoId}
-          />
-
-          {entrevistadoId === null && (
+          
             <>
               {/* Nome */}
               <div className="flex flex-col gap-1">
@@ -308,14 +282,7 @@ const CadastroEntrevistadoForm = ({
                 </button>
               </div>
             </>
-          )}
-
-          {entrevistadoId !== null && (
-            <p className="text-vinho text-sm px-2">
-              Entrevistado existente selecionado. Não é necessário
-              realizar um novo cadastro.
-            </p>
-          )}
+         
 
         </section>
       </form>
