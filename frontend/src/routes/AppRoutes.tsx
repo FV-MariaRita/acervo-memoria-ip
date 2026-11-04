@@ -24,6 +24,11 @@ function AppRoutes() {
                 <Route path='/sobre-nos' element={<SobreNos />} />
                 <Route path='/entrevistadores' element={<Entrevistadores />} />
                 <Route path={'/entrevistados/:id'} element={<EntrevistadoEspecifica  />} />
+                <Route
+                    path="/entrevistados/:id_entrevistado/entrevista/:data_entrevista/solicitar-transcricao"
+                    element={<Solicitacoes />}
+                />
+
 
                 <Route path='/login' element={<Login />} />
                 <Route element={<ProtectedRoutes />}>
