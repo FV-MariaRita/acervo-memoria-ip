@@ -6,6 +6,9 @@ import Entrevistados from '../pages/Entrevistados';
 import SobreNos from '../pages/Sobre';
 import Entrevistadores from '../pages/Entrevistadores';
 import EntrevistadoEspecifica from '../pages/EntrevistadoEspecifica';
+import Login from '../pages/Login';
+import ProtectedRoutes from './ProtectedRoutes';
+import Teste from '../pages/Teste';
 
 
 function AppRoutes() {
@@ -19,10 +22,16 @@ function AppRoutes() {
                 <Route path='/sobre-nos' element={<SobreNos />} />
                 <Route path='/entrevistadores' element={<Entrevistadores />} />
                 <Route path={'/entrevistados/:id'} element={<EntrevistadoEspecifica  />} />
+
+                <Route path='/login' element={<Login />} />
+
+                <Route element={<ProtectedRoutes />}>
+                    <Route path='/admin' element={<Teste />} />
+                </Route>
             </Route>           
         </Routes>
 
-    )
+    );
 }
 
 export default AppRoutes; 
