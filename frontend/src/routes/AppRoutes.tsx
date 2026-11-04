@@ -9,7 +9,8 @@ import EntrevistadoEspecifica from '../pages/EntrevistadoEspecifica';
 import Login from '../pages/Login';
 import ProtectedRoutes from './ProtectedRoutes';
 import Teste from '../pages/Teste';
-
+import Painel from '../pages/Painel';
+import CadastroEntrevista from '../pages/CadastroEntrevista';
 
 function AppRoutes() {
 
@@ -22,12 +23,12 @@ function AppRoutes() {
                 <Route path='/sobre-nos' element={<SobreNos />} />
                 <Route path='/entrevistadores' element={<Entrevistadores />} />
                 <Route path={'/entrevistados/:id'} element={<EntrevistadoEspecifica  />} />
-
                 <Route path='/login' element={<Login />} />
-
                 <Route element={<ProtectedRoutes />}>
                     <Route path='/admin' element={<Teste />} />
                 </Route>
+                <Route path='/painel' element={<Painel  />} />
+                <Route path='/cadastro-entrevista' element={<CadastroEntrevista  />} />
             </Route>           
         </Routes>
 
