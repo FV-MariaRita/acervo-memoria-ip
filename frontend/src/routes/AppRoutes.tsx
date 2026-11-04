@@ -11,7 +11,7 @@ import ProtectedRoutes from './ProtectedRoutes';
 import Teste from '../pages/Teste';
 import Painel from '../pages/Painel';
 import CadastroEntrevista from '../pages/CadastroEntrevista';
-
+import CadastroEntrevistado from '../pages/CadastroEntrevistado';
 function AppRoutes() {
 
     return (
@@ -29,6 +29,7 @@ function AppRoutes() {
                 </Route>
                 <Route path='/painel' element={<Painel  />} />
                 <Route path='/cadastro-entrevista' element={<CadastroEntrevista  />} />
+                <Route path='/cadastro-entrevistado' element={<CadastroEntrevistado  />} />
             </Route>           
         </Routes>
 

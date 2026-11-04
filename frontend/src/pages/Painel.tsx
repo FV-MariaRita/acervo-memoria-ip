@@ -5,7 +5,7 @@ const Painel = () => {
     return (
     <div className="flex flex-col items-center px-4 py-8 gap-10 w-full">
         <div className="flex w-full max-w-[1000px] justify-between">
-            <Link to="/painel" className="w-1/5">
+            <Link to="/cadastro-entrevistado" className="w-1/5">
                 <button className="w-full bg-vinho text-branco text sm md:text-base font-bold font-corpo px-4 py-2 rounded">
                     Criar entrevistado
                 </button>
