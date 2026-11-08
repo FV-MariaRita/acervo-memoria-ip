@@ -153,7 +153,9 @@ const EntrevistadoEspecifica = () => {
               <div className="w-full max-w-[52rem] flex flex-col justify-center mb-10 gap-12 px-6">
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-3">
-                    <h2 className="text-2xl font-bold text-ocre font-serif">Sobre a entrevista</h2>
+                    <h2 className="text-2xl font-bold text-ocre font-serif">
+                      Sobre a entrevista
+                    </h2>
                     <p className="text-grafite text-base leading-relaxed text-justify">
                       Essa entrevista foi realizada em {entrevistaAtual.local} com os entrevistadores{" "}
                       {entrevistaAtual.entrevistadores.map((entrevistador, index) => (

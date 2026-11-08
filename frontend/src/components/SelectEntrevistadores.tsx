@@ -41,7 +41,7 @@ const SelectEntrevistadores = ({
             <button
                 type="button"
                 onClick={() => setAberto(!aberto)}
-                className="w-full rounded-xl border border-vinho/70 bg-[#E3E3E380] min-h-12 rounded-md p-3 flex justify-between items-center gap-3 text-left"
+                className="w-full rounded-xl border border-vinho/70 bg-[#E3E3E380] min-h-12 p-3 flex justify-between items-center gap-3 text-left"
             >
                 <div className="flex flex-wrap items-center gap-2 flex-1">
 
