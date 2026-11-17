@@ -1,15 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from typing import Annotated
-from sqlmodel import Session
-from app.database.connection import get_session
+
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from pydantic import ValidationError
+from sqlmodel import Session
+
+from app.database.connection import get_session
+from app.models.entrevista import Entrevista
+from app.repositories.entrevista import deletar_entrevista
 
 # entrevistas
-from app.schemas.entrevista import EntrevistaCreate, EntrevistaUpdate, EntrevistaDataResponse, EntrevistaResponse
-from app.schemas.entrevistado import EntrevistadoEntrevistaResponse
-from app.repositories.entrevista import deletar_entrevista
-from app.services.entrevista import criar_entrevista_completa, atualizar_entrevista_completa
-from app.models.entrevista import Entrevista
+from app.schemas.entrevista import (
+    EntrevistaAlertResponse,
+    EntrevistaCreate,
+    EntrevistaResponse,
+    EntrevistaUpdate,
+)
+from app.services.entrevista import (
+    atualizar_entrevista_completa,
+    service_cadastrar_entrevista,
+)
+
 #from app.services.auth import require_admin
 
 router = APIRouter(
@@ -22,7 +32,7 @@ router = APIRouter(
 # create
 @router.post(
     "/entrevistas/{entrevistado_id}",
-    response_model = EntrevistaDataResponse
+    response_model = EntrevistaAlertResponse
     )
 def cadastrar_entrevista (
     entrevistado_id: int,
@@ -58,9 +68,13 @@ def cadastrar_entrevista (
         session=session
     )
 
+    response = EntrevistaAlertResponse(
+        id_entrevistado = entrevistado.id,
+        data = entrevista.data
+    )
     # add try except
 
-    return entrevista
+    return response
 
 
 # update
@@ -92,7 +106,7 @@ def editar_entrevista (
 # delete
 @router.delete(
     "/entrevistas/{entrevista_id}",
-    response_model = EntrevistaDataResponse
+    response_model = EntrevistaAlertResponse
     )
 def excluir_entrevista (
     entrevista_id: int,

@@ -1,5 +1,6 @@
-from sqlmodel import SQLModel, Field
-from sqlalchemy import Column,Text
+from sqlalchemy import Column, Text
+from sqlmodel import Field, SQLModel
+
 
 class Entrevistado(SQLModel, table=True):
     id: int | None = Field(default = None, primary_key = True)

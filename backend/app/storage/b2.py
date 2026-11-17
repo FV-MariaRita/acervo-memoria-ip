@@ -1,6 +1,9 @@
-import os
 import logging
+import os
 from functools import lru_cache
+from pathlib import Path
+from uuid import uuid4
+
 from b2sdk.v2 import B2Api, InMemoryAccountInfo
 
 logger = logging.getLogger(__name__)
@@ -67,7 +70,6 @@ def upload_file(
             "Não foi possível enviar o arquivo."
         ) from exc
 
-from b2sdk.v2 import InMemoryAccountInfo, B2Api
 
 def delete_file (b2_path: str) -> None:
     try:
@@ -107,3 +109,22 @@ def gerar_url(b2_path: str) -> str:
         raise ErroArmazenamento(
             "Não foi possível gerar a URL da foto."
         ) from exc
+
+def update_file(
+    file_bytes: bytes,
+    content_type: str,
+    path_antigo: str,
+    extensao: str,
+) -> str:
+
+    diretorio = str(Path(path_antigo).parent)
+    novo_nome = f"{uuid4()}{extensao}"
+    path_novo = f"{diretorio}/{novo_nome}"
+
+    upload_file(
+        file_bytes=file_bytes,
+        b2_path=path_novo,
+        content_type=content_type,
+    )
+
+    return path_novo

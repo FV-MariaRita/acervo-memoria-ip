@@ -45,8 +45,6 @@ def atualizar_entrevistado (
         setattr(entrevistado, atributo, valor)
 
     session.add(entrevistado)
-    session.commit()
-    session.refresh(entrevistado)
 
     return entrevistado
 

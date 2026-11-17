@@ -1,8 +1,10 @@
 from io import BytesIO
+from uuid import UUID
 
 from fastapi import HTTPException, UploadFile
 from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel
+
 
 class ArquivoValidado(BaseModel):
     extensao: str
@@ -25,7 +27,7 @@ MAX_ALTURA = 6000
 
 PROPORCOES_FOTO = {
     "entrevistado": (1, 1),
-    "entrevistador": (181, 240),
+    "entrevistador": (3, 4),
     "entrevista": (5, 4),
 }
 
@@ -75,17 +77,23 @@ def validar_integridade_foto(conteudo: bytes) -> None:
         )
 
 
+
 def validar_proporcao_foto(
     largura: int,
     altura: int,
     proporcao_largura: int,
     proporcao_altura: int,
+    tolerancia: float = 0.05,
 ) -> None:
-    if largura * proporcao_altura != altura * proporcao_largura:
-        raise HTTPException(
-            status_code=400,
-            detail="A proporção da foto não é válida."
-        )
+
+    proporcao_real = largura / altura
+    proporcao_esperada = proporcao_largura / proporcao_altura
+
+    diferenca = abs(proporcao_real - proporcao_esperada) / proporcao_esperada
+
+    if diferenca > tolerancia:
+        raise ValueError("A proporção da foto não é válida.")
+
 
 
 def validar_dimensoes_foto(
@@ -437,9 +445,9 @@ def validar_audio(arquivo: UploadFile) -> None:
         validar_integridade_audio(caminho_temporario)
 
         return ArquivoValidado(
-            extensao=extensao,
-            content_type=content_type,
-            conteudo=conteudo
+            extensao=dados.extensao,
+            content_type=dados.content_type,
+            conteudo=dados.conteudo
         )
         
     finally:

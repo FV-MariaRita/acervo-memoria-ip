@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
 from typing import Annotated
-from app.database.connection import get_session
+
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
+
+from app.database.connection import get_session
 from app.schemas.entrevista import EntrevistaResponse
 from app.services.entrevistado import mostrar_entrevistas_do_entrevistado
 

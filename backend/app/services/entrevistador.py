@@ -1,16 +1,26 @@
-from fastapi import UploadFile, File, Form, Depends
 from typing import Annotated
-from sqlmodel import Session, select
-from app.database.connection import get_session
 
+from app.database.connection import get_session
 from app.models.entrevistador import Entrevistador
-from app.schemas.entrevistador import EntrevistadorListaResponse
-from app.repositories.entrevistador import criar_entrevistador, listar_entrevistadores, deletar_entrevistador, atualizar_entrevistador
+from app.repositories.entrevistador import (
+    atualizar_entrevistador,
+    criar_entrevistador,
+    deletar_entrevistador,
+    listar_entrevistadores,
+)
+from app.schemas.entrevistador import (
+    EntrevistadorCreate,
+    EntrevistadorListaResponse,
+    EntrevistadorUpdate,
+)
+from app.storage.b2 import delete_file, gerar_url, upload_file
 from app.validators.arquivos import validar_foto
-from app.storage.b2 import upload_file, gerar_url, delete_file
+from fastapi import Depends, File, Form, UploadFile
+from sqlmodel import Session, select
+
 
 def service_criar_entrevistador (
-    dados: EntrevistadoCreate,
+    dados: EntrevistadorCreate,
     foto: Annotated[UploadFile, File()],
     session: Session
 ) -> Entrevistador | None:
@@ -25,7 +35,7 @@ def service_criar_entrevistador (
             **dados.model_dump()
         )
 
-        entrevistador.path_foto ="provisorio"
+        entrevistador.path_foto ="pendente"
 
         entrevistador = criar_entrevistador(
             entrevistador=entrevistador,
@@ -57,6 +67,12 @@ def service_criar_entrevistador (
 
     except Exception:
         session.rollback()
+        try:
+            delete_file(
+                b2_path = path
+            )
+        except:
+            raise ValueError("Erro ao excluir foto no rollback.")
         raise
 
 def service_atualizar_entrevistador(

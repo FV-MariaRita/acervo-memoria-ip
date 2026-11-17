@@ -1,18 +1,26 @@
-from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
 from typing import Annotated
-from sqlmodel import Session
-from app.database.connection import get_session
-from pydantic.json_schema import SkipJsonSchema
-from pydantic import ValidationError
 
-# entrevistado
-from app.schemas.entrevistado import EntrevistadoComEntrevistaCreate, EntrevistadoUpdate, EntrevistadoNomeResponse, EntrevistadoEntrevistaResponse
-from app.repositories.entrevistado import atualizar_entrevistado, deletar_entrevistado
-from app.services.entrevista import service_cadastrar_entrevista
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from pydantic import ValidationError
+from pydantic.json_schema import SkipJsonSchema
+from sqlmodel import Session
+
+from app.database.connection import get_session
 from app.models.entrevistado import Entrevistado
+from app.repositories.entrevistado import atualizar_entrevistado, deletar_entrevistado
 
 # complemento da entrevista
-from app.schemas.entrevista import Fotos_entrevistaCreate
+from app.schemas.entrevista import EntrevistaAlertResponse
+
+# entrevistado
+from app.schemas.entrevistado import (
+    EntrevistadoComEntrevistaCreate,
+    EntrevistadoEntrevistaResponse,
+    EntrevistadoNomeResponse,
+    EntrevistadoUpdate,
+)
+from app.services.entrevistado import service_criar_entrevistado_com_entrevista
+
 #from app.services.auth import require_admin
 
 router = APIRouter(
@@ -25,7 +33,7 @@ router = APIRouter(
 # create
 @router.post(
     "/entrevistado",
-    response_model = EntrevistadoNomeResponse #colocar dados de entrevista + entrevistado
+    response_model = EntrevistaAlertResponse #colocar dados de entrevista + entrevistado
     )
 def cadastrar_entrevistado_com_entrevista (
     dados: Annotated[str, Form()],
@@ -48,7 +56,7 @@ def cadastrar_entrevistado_com_entrevista (
             detail=e.errors()
         )
 
-    entrevistado, entrevista = service_cadastrar_entrevista(
+    entrevistado, entrevista = service_criar_entrevistado_com_entrevista(
         dados_entrevista=dados.entrevista,
         dados_entrevistado=dados.entrevistado,
         foto_entrevistado=foto_entrevistado,
@@ -59,7 +67,12 @@ def cadastrar_entrevistado_com_entrevista (
         session=session
     )
 
-    return entrevistado
+    response = EntrevistaAlertResponse(
+        entrevistado_id = entrevistado.id,
+        entrevistado_nome = entrevistado.nome,
+        entrevista_data = entrevista.data
+    )
+    return response
 
 
 # update
@@ -69,14 +82,16 @@ def cadastrar_entrevistado_com_entrevista (
 )
 def editar_entrevistado (
     id: int,
-    dados: EntrevistadoUpdate,
-    session: Annotated[Session, Depends(get_session)]
-    ):
+    session: Annotated[Session, Depends(get_session)],
+    dados: Annotated[str, Form()] | None = None,
+    foto_entrevistado: Annotated[UploadFile, File()] | None = None
+    ) -> Entrevistado:
 
-    entrevistado = atualizar_entrevistado(
-        id = id, 
-        dados = dados, 
-        session = session
+    entrevistado = service_atualizar_entrevistado(
+        id = id,
+        session = session,
+        dados = dados,
+        foto_entrevistado = foto_entrevistado
         )
     
     if not entrevistado:

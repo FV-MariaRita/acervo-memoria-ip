@@ -1,14 +1,17 @@
-from fastapi import FastAPI
-from app.routers import entrevistas
-from app.routers import entrevistados
-from app.routers import entrevistadores
-from app.routers.admin import (
-    entrevistas as admin_entrevistas,
-    entrevistadores as admin_entrevistadores,
-    entrevistados as admin_entrevistados
-)
+import logging
 
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.routers import entrevistadores, entrevistados, entrevistas
+from app.routers.admin import entrevistadores as admin_entrevistadores
+from app.routers.admin import entrevistados as admin_entrevistados
+from app.routers.admin import entrevistas as admin_entrevistas
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 app = FastAPI(title="Acervo de História Oral do IP")
 

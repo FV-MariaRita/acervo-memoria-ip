@@ -15,30 +15,6 @@ from app.validators.geral import DataNaoFutura
     entrevistadores: list[int]
     fotos: list[Fotos_entrevistaCreate]'''
 
-class EntrevistaCreate (SQLModel):
-    local: NonBlankString = Field(
-        min_length=1,
-        max_length=50
-    )
-    data: DataNaoFutura
-    # path de transcricao e audio sao incluidos apos upload
-
-    sumario: list[SumarioCreate]
-    entrevistadores: list[PositiveInt]
-    fotos: list[Fotos_entrevistaCreate]
-
-class EntrevistaUpdate (SQLModel):
-    local: NonBlankString | None = Field(
-        default=None,
-        min_length=1,
-        max_length=50
-    )
-    data: DataNaoFutura | None = None
-    # path de transcricao e audio sao incluidos apos upload
-
-    sumario: list[SumarioUpdate] | None = []
-    entrevistadores: Entrevistador_entrevistaUpdate | None = None
-    fotos: list[Fotos_entrevistaUpdate] | None = []
 
 class Entrevistador_entrevistaCreate (SQLModel):
     entrevistador_id: PositiveInt
@@ -83,6 +59,31 @@ class Fotos_entrevistaUpdate (SQLModel):
     numero: PositiveInt | None = None
     excluir: bool = False
 
+class EntrevistaCreate (SQLModel):
+    local: NonBlankString = Field(
+        min_length=1,
+        max_length=50
+    )
+    data: DataNaoFutura
+    # path de transcricao e audio sao incluidos apos upload
+
+    sumario: list[SumarioCreate]
+    entrevistadores: list[PositiveInt]
+    fotos: list[Fotos_entrevistaCreate]
+
+class EntrevistaUpdate (SQLModel):
+    local: NonBlankString | None = Field(
+        default=None,
+        min_length=1,
+        max_length=50
+    )
+    data: DataNaoFutura | None = None
+    # path de transcricao e audio sao incluidos apos upload
+
+    sumario: list[SumarioUpdate] | None = []
+    entrevistadores: Entrevistador_entrevistaUpdate | None = None
+    fotos: list[Fotos_entrevistaUpdate] | None = []
+
 class Entrevistador_entrevistaResponse (SQLModel):
     id: PositiveInt
     nome: str
@@ -103,5 +104,7 @@ class EntrevistaResponse (SQLModel):
     path_fotos_entrevista: list[str]
     path_fotos_marcantes: list[str]
 
-class EntrevistaDataResponse (SQLModel):
-    data: date
+class EntrevistaAlertResponse (SQLModel):
+    entrevistado_id: int
+    entrevistado_nome: str
+    entrevista_data: date

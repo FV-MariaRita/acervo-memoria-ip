@@ -1,8 +1,18 @@
 import type { EntrevistaCreate } from "../types/entrevista";
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import SelectEntrevistadores from "./SelectEntrevistadores";
 import GridFotos from "./GridFotos";
 import SelectEntrevistado from "./SelectEntrevistado";
+import { File } from "lucide-react";
+
+interface Entrevistador {
+        id: number;
+        nome: string;
+    }
+interface Entrevistado {
+    id: number;
+    nome: string;
+}
 
 const CadastroEntrevistaForm = (entrevista: EntrevistaCreate) => {
     const [dadosEntrevista, setDadosEntrevista] = useState<EntrevistaCreate>({
@@ -12,38 +22,28 @@ const CadastroEntrevistaForm = (entrevista: EntrevistaCreate) => {
         sumario: [],
         fotos: []
     });
-    interface Entrevistador {
-        id: number;
-        nome: string;
-    }
-    interface Entrevistado {
-        id: number;
-        nome: string;
-    }
-    const [fotosEntrevista, setFotosEntrevista] = useState<File[]>([]);
-    const [fotosMarcantes, setFotosMarcantes] = useState<File[]>([]);
     const [audio, setAudio] = useState<File | null>(null);
     const [transcricao, setTranscricao] = useState<File | null>(null);
+    const [fotosEntrevista, setFotosEntrevista] = useState<File[]>([]);
+    const [fotosMarcantes, setFotosMarcantes] = useState<File[]>([]);
     const [entrevistadoId, setEntrevistadoId] = useState<number | null>(null);
-    const listaEntrevistadores: Entrevistador[] = [
-        { id: 1, nome: "Samuel Oliveira" },
-        { id: 2, nome: "Érika Tambke" },
-        { id: 3, nome: "Juliana Pereira" },
-    ];
-    const listaEntrevistados: Entrevistado[] = [
-        { id: 1, nome: "Ricardo funari" },
-        { id: 2, nome: "Dante Gastaldani" },
-    ];
+    
     
     const handleSubmit = async (
-        event: React.FormEvent<HTMLFormElement>
+        event: FormEvent<HTMLFormElement>
         ) => {
         event.preventDefault();
 
-        // Verificações básicas antes de enviar
+        // verificacoes
         if (entrevistadoId === null) {
             alert("Selecione um entrevistado.");
             return;
+        }
+
+        for (const [atributo, valor] of Object.entries(dadosEntrevista)) {
+            if (valor === "" || valor === null || valor === undefined) {
+                console.log(`${atributo} está vazio`);
+            }
         }
 
         if (!audio || !transcricao) {
@@ -196,6 +196,7 @@ const CadastroEntrevistaForm = (entrevista: EntrevistaCreate) => {
                                         bg-[#E3E3E380] px-4 py-2 text-vinho font-corpo text-sm
                                         hover:bg-vinho hover:text-white transition"
                             >
+                                <File className="vinho" size={16} />
                                 Escolher arquivo
                             </label>
 
@@ -251,13 +252,13 @@ const CadastroEntrevistaForm = (entrevista: EntrevistaCreate) => {
                         titulo="Fotos da entrevista"
                         fotos={fotosEntrevista}
                         onChange={setFotosEntrevista}
-                        />
+                    />
 
-                        <GridFotos
+                    <GridFotos
                         titulo="Fotos marcantes"
                         fotos={fotosMarcantes}
                         onChange={setFotosMarcantes}
-                        />
+                    />
                 </section>
 
                 {/* Botão de envio */}
@@ -272,3 +273,15 @@ const CadastroEntrevistaForm = (entrevista: EntrevistaCreate) => {
     );
 };
 export default CadastroEntrevistaForm;
+
+/*
+    const listaEntrevistadores: Entrevistador[] = [
+        { id: 1, nome: "Samuel Oliveira" },
+        { id: 2, nome: "Érika Tambke" },
+        { id: 3, nome: "Juliana Pereira" },
+    ];
+    const listaEntrevistados: Entrevistado[] = [
+        { id: 1, nome: "Ricardo funari" },
+        { id: 2, nome: "Dante Gastaldani" },
+    ];
+*/

@@ -1,7 +1,7 @@
 //TIPOS DE GET
 export interface Entrevista {
     local: string; 
-    data: Date;
+    data: string;
     path_audio: string; 
     path_transcricao: string; 
 
@@ -68,7 +68,7 @@ export interface SumarioUpdate {
 }
 
 export interface Fotos_entrevistaCreate {
-    categogia: string; 
+    categoria: string; 
     numero: number;
 }
 
