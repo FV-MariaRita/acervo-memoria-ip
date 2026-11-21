@@ -50,7 +50,10 @@ def service_criar_entrevistado_com_entrevista (
     session: Session,
     fotos_entrevista: list[UploadFile] | None = None,
     fotos_marcantes: list[UploadFile] | None = None,
-    ):
+):
+
+    path_perfil_enviado = False
+    path_perfil = None
 
     try:
         foto_perfil_validada = validar_foto(
@@ -76,14 +79,17 @@ def service_criar_entrevistado_com_entrevista (
 
         # upload da foto de perfil
         path_perfil = (
-                f"entrevistados/{entrevistado.id}/perfil/{entrevistado.id}{foto_perfil_validada.extensao}"
-            )
+            f"entrevistados/{entrevistado.id}/perfil/{entrevistado.id}{foto_perfil_validada.extensao}"
+        )
 
         upload_file(
             file_bytes=foto_perfil_validada.conteudo,
             b2_path=path_perfil,
             content_type=foto_perfil_validada.content_type
         )
+
+        path_perfil_enviado = True
+        entrevistado.path_foto = path_perfil
 
         paths_b2_criados = []
         paths_b2_criados.append(path_perfil)
@@ -101,13 +107,27 @@ def service_criar_entrevistado_com_entrevista (
 
         if not entrevista:
             raise ValueError("Erro ao criar a entrevista.")
+
+        session.commit()
+
+        session.refresh(entrevistado)
+        session.refresh(entrevista)
+
+        return entrevistado, entrevista
+        
     except Exception:
+
         session.rollback()
-        try:
-            delete_file(b2_path=path_perfil)
-        except:
-            raise
+
+        if path_perfil_enviado and path_perfil: 
+
+            try:
+                delete_file(b2_path=path_perfil)
+
+            except Exception as error:
+                print(f"Erro ao remover foto de perfil {path_perfil}: {error}")
         raise
+    
 
 def service_mostrar_entrevistados(
     session: Session

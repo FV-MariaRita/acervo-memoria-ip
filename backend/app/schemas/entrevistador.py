@@ -27,6 +27,7 @@ class EntrevistadorUpdate (SQLModel):
     # path_foto incluido pelo backend
 
 class EntrevistadorListaResponse (SQLModel):
+    id: int
     nome: str
     bio: str
     path_foto: str #url do b2, nao path do banco

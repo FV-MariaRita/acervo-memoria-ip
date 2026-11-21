@@ -1,4 +1,4 @@
-import SolicitacaoForm from "../components/solicitacoes/SolicitacaoForm";
+import SolicitacaoForm from "../components/forms/SolicitacaoForm";
 
 const Solicitacoes = () => {
 

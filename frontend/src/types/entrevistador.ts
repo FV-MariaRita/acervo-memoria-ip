@@ -1,11 +1,13 @@
 //TIPOS DE GET - RECEBE DADOS DA API
 export interface EntrevistadorLista {
+    id: number,
     nome: string;
     bio: string; 
     path_foto: string;
 }
 
 export interface EntrevistadorNome {
+    id: number,
     nome: string;
 }
 

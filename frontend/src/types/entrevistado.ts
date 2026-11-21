@@ -15,6 +15,10 @@ export interface EntrevistadoEntrevista  {
 }
 
 export interface EntrevistadoNome {
+    nome: string, 
+}
+
+export interface EntrevistadoNome {
     nome: string;
 }
 

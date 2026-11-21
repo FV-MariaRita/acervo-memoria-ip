@@ -69,7 +69,7 @@ const SolicitacaoEspecifica = () => {
                             <p className={labelClass}>Nome:</p>
                             <p className={textClass}>
                                 {/*{solicitante?.nome} */}
-                                Anna Beatriz Waldheim da Silva
+                                João Silva
                             </p>     
                         </div>
 
@@ -78,7 +78,7 @@ const SolicitacaoEspecifica = () => {
                             <p className={labelClass}>E-mail:</p>
                             <p className={textClass}>
                                 {/*{solicitante?.email}*/}
-                                annabwaldheim@gmail.com
+                                joãosilva@gmail.com
                             </p>    
                         </div>
 
@@ -88,7 +88,7 @@ const SolicitacaoEspecifica = () => {
                                 <p className={labelClass}>CPF:</p>
                                 <p className={textClass}>
                                     {/*{solicitante?.cpf}*/}
-                                    210.842.517-95
+                                    123.456.789-10
                                 </p>
                             </div>
 
@@ -96,7 +96,7 @@ const SolicitacaoEspecifica = () => {
                                 <p className={labelClass}>Telefone:</p>
                                 <p className={textClass} >
                                     {/*{solicitante?.telefone}*/}
-                                    (21) 99669-5644
+                                    (21) 98765-4321
                                 </p>  
                             </div>
                         </div>

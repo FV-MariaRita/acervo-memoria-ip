@@ -12,9 +12,9 @@ const CardEntrevistado = ({nome, path_foto, funcao}: EntrevistadoLista) => {
                     className="rounded-full w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-cover shrink-0"
                 />
 
-                <div className='flex flex-col gap-2.5 min-w-0 flex-nowrap justify-start'>
+                <div className='flex flex-col gap-2.5 w-full flex-nowrap justify-start'>
                     
-                    <h4 className="font-title text-base sm:text-lg font-bold text-branco truncate leading-tight">
+                    <h4 className="font-serif text-base sm:text-lg font-bold text-branco truncate leading-tight">
                         {nome}
                     </h4>
                     

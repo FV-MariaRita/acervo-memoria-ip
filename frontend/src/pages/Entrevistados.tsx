@@ -17,7 +17,7 @@ const Entrevistados = () => {
                     construção da memória coletiva.
                 </p>
                 
-                <div className="flex items-center justify-center">
+                <div className="flex w-full items-center justify-center px-6">
                     <ListaEntrevistados />
                 </div>
                 

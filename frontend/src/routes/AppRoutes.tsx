@@ -10,9 +10,13 @@ import Login from '../pages/Login';
 import Solicitacoes from '../pages/SolicitacaoTranscricao';
 import Painel from '../pages/Painel';
 import CadastroEntrevista from '../pages/CadastroEntrevista';
-import CadastroEntrevistado from '../pages/CadastroEntrevistado';
+import CadastroHistoriaOral from '../pages/CadastroHistoriaOral';
 import PainelSolicitacoes from '../pages/PainelSolicitacoes';
 import SolicitacaoEspecifica from '../pages/SolicitacaoEspecifica';
+import CadastroEntrevistador from '../pages/CadastroEntrevistador';
+import AdminEntrevistadores from '../pages/admin/AtualizarEntrevistadores';
+
+
 function AppRoutes() {
 
     return (
@@ -34,9 +38,11 @@ function AppRoutes() {
                 
                 <Route path='/admin' element={<Painel  />} />
                 <Route path='/admin/cadastro-entrevista' element={<CadastroEntrevista  />} />
-                <Route path='/admin/cadastro-entrevistado' element={<CadastroEntrevistado  />} />
+                <Route path='/admin/cadastro-entrevistado' element={<CadastroHistoriaOral  />} />
+                <Route path='/admin/cadastro-entrevistador' element={<CadastroEntrevistador />}/>
                 <Route path='/admin/solicitacoes' element={<PainelSolicitacoes />}/>
                 <Route path='/admin/solicitacoes/:id' element={<SolicitacaoEspecifica />} />
+                <Route path="/admin/entrevistadores" element={<AdminEntrevistadores />} />
             </Route>           
         </Routes>
 

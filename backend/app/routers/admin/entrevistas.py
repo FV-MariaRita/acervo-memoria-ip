@@ -19,6 +19,9 @@ from app.services.entrevista import (
     atualizar_entrevista_completa,
     service_cadastrar_entrevista,
 )
+from app.services.entrevistado import (
+    buscar_entrevistado
+)
 
 #from app.services.auth import require_admin
 
@@ -58,9 +61,9 @@ def cadastrar_entrevista (
             )
         )
 
-    entrevistado, entrevista = service_cadastrar_entrevista(
+    entrevista, paths_b2_criados = service_cadastrar_entrevista(
         entrevistado_id=entrevistado_id,
-        dados_entrevista=dados_entrevista,
+        dados=dados_entrevista,
         audio=audio,
         transcricao=transcricao,
         fotos_entrevista=fotos_entrevista,
@@ -68,13 +71,18 @@ def cadastrar_entrevista (
         session=session
     )
 
-    response = EntrevistaAlertResponse(
-        id_entrevistado = entrevistado.id,
-        data = entrevista.data
+    entrevistado = buscar_entrevistado(
+        id=entrevistado_id,
+        session=session
     )
-    # add try except
 
+    response = EntrevistaAlertResponse(
+        entrevistado_id=entrevistado.id,
+        entrevistado_nome=entrevistado.nome,
+        entrevista_data=entrevista.data
+    )
     return response
+    # add try except
 
 
 # update

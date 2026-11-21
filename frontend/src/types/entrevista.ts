@@ -26,11 +26,17 @@ export interface Entrevistador_entrevista {
     nome: string;
 }
 
+export interface EntrevistaAlert {
+    entrevistado_id: number,
+    entrevistado_nome: string, 
+    entrevista_data: Date
+}
+
 
 // ENVIO DE DADOS 
 export interface EntrevistaCreate {
     local: string; 
-    data: Date; 
+    data: Date | null; 
 
     sumario: SumarioCreate[]; 
     entrevistadores: number[]; 
@@ -68,8 +74,9 @@ export interface SumarioUpdate {
 }
 
 export interface Fotos_entrevistaCreate {
-    categoria: string; 
+    categoria: string;
     numero: number;
+    arquivo_id: string;
 }
 
 export interface Fotos_entrevistaUpdate {

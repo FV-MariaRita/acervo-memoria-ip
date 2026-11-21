@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from "react";
 
 import Carrossel from "../components/Carrossel";
 import DropdownSumario from "../components/DropdownSumario";
-import DropdownEntrevistas from "../components/DropdownEntrevistas"; // <--- Importado
+import DropdownEntrevistas from "../components/DropdownEntrevistas"; 
 
 import type { Entrevista } from "../types/entrevista";
 import type { EntrevistadoEntrevista } from "../types/entrevistado";
@@ -13,16 +13,21 @@ import { listarEntrevistadoId } from "../services/entrevistados";
 
 const EntrevistadoEspecifica = () => {
 
-  const navigate = useNavigate(); 
-  
-  const { id } = useParams<{ id: string }>(); 
+  const navigate = useNavigate();
 
-  const [entrevistado, setEntrevistado] = useState<EntrevistadoEntrevista | null>(null); 
-  const [entrevistas, setEntrevistas] = useState<Entrevista[] | null>(null);
+  const { id } = useParams<{ id: string }>();
 
-  const [carregando, setCarregando] = useState(true); 
+  const [entrevistado, setEntrevistado] =
+    useState<EntrevistadoEntrevista | null>(null);
+
+  const [entrevistas, setEntrevistas] =
+    useState<Entrevista[] | null>(null);
+
+  const [selecionada, setSelecionada] = useState<number | null>(null);
+
+  const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null); 
-  const [selecionada, setSelecionada] = useState<number | null>(null); 
+   
 
   useEffect(() => {
     if (!id) {
@@ -43,6 +48,7 @@ const EntrevistadoEspecifica = () => {
     setErro(null);
 
     Promise.all([
+
       listarEntrevistadoId(entrevistadoId),
       mostrarEntrevista(entrevistadoId),
     ])
@@ -63,8 +69,8 @@ const EntrevistadoEspecifica = () => {
       .finally(() => {
         setCarregando(false);
       });
-  }, [id]);
-
+  }, [id]); 
+ 
   const audio = useRef<HTMLAudioElement>(null);
   const audioJump = (seg: number) => {
     if (audio.current) {
@@ -97,7 +103,7 @@ const EntrevistadoEspecifica = () => {
     );
   }
 
-  const entrevistaAtual = entrevistas && selecionada != null ? entrevistas[selecionada] : null;
+  const entrevistaAtual = entrevistas && selecionada != null ? entrevistas[selecionada] : null; 
 
   return (
     <div className="flex flex-col items-center justify-center py-6 w-full">
@@ -252,11 +258,11 @@ const EntrevistadoEspecifica = () => {
             <h2 className="text-2xl font-bold text-ocre font-serif">
               Sugestões
             </h2>
-            <p className="text-grafite text-base leading-relaxed text-justify">
+            {/*<p className="text-grafite text-base leading-relaxed text-justify">
               pipipi
               <br />
               popopo
-            </p>
+            </p>*/}
           </div>
         </div>
       </div>

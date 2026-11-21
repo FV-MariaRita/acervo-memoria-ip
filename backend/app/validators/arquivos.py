@@ -275,10 +275,10 @@ def validar_formato_audio(dados: dict) -> None:
     formato = dados.get("format", {}).get("format_name", "")
     formatos = set(formato.split(","))
 
-    if "wav" not in formatos and "mp3" not in formatos:
+    if "wav" not in formatos and "mp3" not in formatos and "m4a" not in formatos:
         raise HTTPException(
             status_code=415,
-            detail="Formato não permitido. Envie um arquivo WAV ou MP4.",
+            detail="Formato não permitido. Envie um arquivo WAV ou MP3.",
         )
 
 def validar_faixas_audio(dados: dict) -> None:
@@ -444,10 +444,22 @@ def validar_audio(arquivo: UploadFile) -> None:
         validar_duracao_audio(dados)
         validar_integridade_audio(caminho_temporario)
 
+        extensao = Path(arquivo.filename).suffix.lower()
+        content_type = arquivo.content_type
+
+        if extensao not in [".wav", ".mp3", ".m4a"]:
+            raise HTTPException(
+                status_code=415,
+                detail="Extensão não permitida. Envie WAV ou MP3."
+            )
+
+        arquivo.file.seek(0)
+        conteudo = arquivo.file.read()
+
         return ArquivoValidado(
-            extensao=dados.extensao,
-            content_type=dados.content_type,
-            conteudo=dados.conteudo
+            extensao=extensao,
+            content_type=content_type,
+            conteudo=conteudo
         )
         
     finally:

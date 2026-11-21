@@ -25,6 +25,9 @@ def service_criar_entrevistador (
     session: Session
 ) -> Entrevistador | None:
 
+    path = None
+    upload_realizado = False
+
     try:
         foto_entrevistador = validar_foto(
             foto,
@@ -58,6 +61,8 @@ def service_criar_entrevistador (
             content_type=foto_entrevistador.content_type
         )
 
+        upload_realizado = True
+
         entrevistador.path_foto = path
 
         session.commit()
@@ -67,12 +72,14 @@ def service_criar_entrevistador (
 
     except Exception:
         session.rollback()
-        try:
-            delete_file(
-                b2_path = path
-            )
-        except:
-            raise ValueError("Erro ao excluir foto no rollback.")
+
+        if upload_realizado and path:
+            try:
+                delete_file(
+                    b2_path = path
+                )
+            except Exception:
+                raise ValueError("Erro ao excluir foto no rollback.")
         raise
 
 def service_atualizar_entrevistador(
@@ -134,17 +141,17 @@ def service_excluir_entrevistador(
     if not entrevistador:
         raise ValueError("Entrevistador não encontrado.")
 
+    delete_file(
+        b2_path = entrevistador.path_foto
+    )
+
     entrevistador_excluido = deletar_entrevistador(
         id = entrevistador_id,
         session = session
     )
 
-    if not entrevistador:
+    if not entrevistador_excluido:
         raise ValueError("Não foi possível excluir o entrevistador.")
-
-    delete_file(
-        b2_path = entrevistador.path_foto
-    )
 
     session.commit()
     return entrevistador_excluido
@@ -159,6 +166,7 @@ def service_mostrar_entrevistadores(
 
     for entrevistador in entrevistadores:
         resultado.append({
+            "id": entrevistador.id,
             "nome": entrevistador.nome,
             "bio": entrevistador.bio,
             "path_foto": (

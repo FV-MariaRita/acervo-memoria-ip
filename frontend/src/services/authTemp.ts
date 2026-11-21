@@ -29,3 +29,7 @@ export async function logoutTeste() {
 
     localStorage.removeItem("authTeste");
 }
+
+export function verificarAdminTeste(): boolean {
+    return localStorage.getItem("authTeste") === "true";
+}

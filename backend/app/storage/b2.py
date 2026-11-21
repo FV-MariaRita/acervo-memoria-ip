@@ -70,7 +70,6 @@ def upload_file(
             "Não foi possível enviar o arquivo."
         ) from exc
 
-
 def delete_file (b2_path: str) -> None:
     try:
         for arquivo in get_bucket().list_file_versions(

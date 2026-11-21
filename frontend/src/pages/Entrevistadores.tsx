@@ -7,10 +7,7 @@ const Entrevistadores = () => {
         <h1>Entrevistadores</h1>
 
         <p className="font-corpo text-grafite text-justify text-base mb-6 px-2 sm:px-6">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean egestas suscipit lacus, in iaculis nisi 
-          dictum placerat. Duis pretium rutrum vulputate. Nulla imperdiet mauris magna. Nam a rutrum leo. Aliquam 
-          tempor felis sit amet purus placerat, nec tristique odio mollis. In eget porta nulla. In laoreet, elit 
-          vel congue ornare, nulla nisi pretium dolor, vestibulum euismod quam orci non diam.
+          Os entrevistadores que compõem este acervo são parte fundamental da construção dessas memórias. Por meio de suas escutas, perguntas e trocas, contribuem para registrar histórias, compartilhar experiências e preservar trajetórias que ajudam a compreender a fotografia popular e sua importância social, cultural e histórica.
         </p>
 
         <div className="flex flex-col items-center justify-start my-5 mx-auto gap-2 bg-verde-hover/40 w-full md:max-w-2xl rounded-2xl overflow-hidden">

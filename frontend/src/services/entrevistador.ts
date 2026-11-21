@@ -25,24 +25,25 @@ export function criarEntrevistador (dados : EntrevistadorCreate): Promise<Entrev
     });
 }
 
-export function atualizarEntrevistador(id: number, dados: EntrevistadorUpdate): Promise<EntrevistadorLista> {
+export const atualizarEntrevistador = (id: number, dados: EntrevistadorUpdate, foto: File | null) => {
+  const formData = new FormData();
 
-    return apiFetch<EntrevistadorLista>(`/admin/entrevistadores/${id}`, {
-        method: 'PATCH', 
-        headers: {
-            "Contente-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-    });
-} 
+  formData.append("dados", JSON.stringify(dados));
+
+  if (foto) {
+    formData.append("foto", foto);
+  }
+
+  return apiFetch(`/admin/entrevistadores/${id}`, {
+    method: "PATCH",
+    body: formData,
+  });
+};
+
 
 export function excluirEntrevistador(id: number): Promise<EntrevistadorNome> {
 
     return apiFetch(`/admin/entrevistadores/${id}`, {
         method: 'DELETE', 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(id)
     })
 }

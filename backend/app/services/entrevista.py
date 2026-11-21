@@ -95,7 +95,7 @@ def service_cadastrar_entrevista(
 
         # verificar se o entrvistado existe
         entrevistado = buscar_entrevistado(
-                entrevistado_id=entrevistado_id,
+                id=entrevistado_id,
                 session=session
             )
 
@@ -123,7 +123,7 @@ def service_cadastrar_entrevista(
         )
         
         entrevista.path_audio = (
-            f"{path_base}/audio{audio.extensao}"
+            f"{path_base}/audio{audio_validado.extensao}"
         )
         
         entrevista.path_transcricao = (
@@ -233,7 +233,7 @@ def service_cadastrar_entrevista(
         session.refresh(entrevistado)
         session.refresh(entrevista)
 
-        return entrevistado, entrevista
+        return entrevista, paths_b2_criados
 
     except Exception:
         session.rollback()
@@ -242,11 +242,11 @@ def service_cadastrar_entrevista(
         for path in reversed(paths_b2_criados):
             try:
                 delete_file(b2_path=path)
-            except:
-                raise
-    except:
+            except Exception as error:
+                print(f"Erro ao excluir arquivo {path}: {error}")
+        
         raise
-
+   
 '''
 def criar_entrevista_completa(
     entrevistado_id: int,
@@ -563,8 +563,8 @@ def mostrar_entrevista_completa (
         session = session
     )
 
-    if not fotos:
-        raise ValueError("")
+    if fotos is None:
+        fotos = []
 
     fotos_marcantes = sorted(
         [foto for foto in fotos if foto.categoria == "marcantes"],

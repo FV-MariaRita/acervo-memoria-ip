@@ -22,3 +22,4 @@ previewConfig.json
 # Cache do Python
 __pycache__/
 *.py[cod]
+frontend/src/data/*.wav

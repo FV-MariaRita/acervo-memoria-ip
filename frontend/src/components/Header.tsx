@@ -43,17 +43,17 @@ const Header = () =>  {
                 md:flex md:static md:flex-row md:w-auto md:p-0 md:shadow-none md:gap-8
                 `}>
 
-                <div className="flex items-center gap-4 md:gap-8">
-                    <Link to="/" className='hover:underline whitespace-nowrap' onClick={() => setAberto(false)}>
+                <div className="flex items-center gap-4 md:gap-8 font-light">
+                    <Link to="/" className='hover:underline whitespace-nowrap tracking-wider' onClick={() => setAberto(false)}>
                         Início
                     </Link>
-                    <Link to="/entrevistados" className="hover:underline whitespace-nowrap" onClick={() => setAberto(false)}>
+                    <Link to="/entrevistados" className="hover:underline whitespace-nowrap tracking-wider" onClick={() => setAberto(false)}>
                         Entrevistados
                     </Link>
-                    <Link to="/entrevistadores" className="hover:underline whitespace-nowrap" onClick={() => setAberto(false)}>
+                    <Link to="/entrevistadores" className="hover:underline whitespace-nowrap tracking-wider" onClick={() => setAberto(false)}>
                         Entrevistadores
                     </Link>
-                    <Link to="/sobre-nos" className="hover:underline whitespace-nowrap" onClick={() => setAberto(false)}>
+                    <Link to="/sobre-nos" className="hover:underline whitespace-nowrap tracking-wider" onClick={() => setAberto(false)}>
                         Sobre
                     </Link>
                 </div>

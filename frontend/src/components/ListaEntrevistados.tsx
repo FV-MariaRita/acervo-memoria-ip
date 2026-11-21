@@ -3,6 +3,7 @@ import type { EntrevistadoLista } from "../types/entrevistado";
 import CardEntrevistado from "./CardEntrevistado";
 import { listarEntrevistados } from "../services/entrevistados";
 
+
 import { Link } from "react-router-dom";
 
 const ListaEntrevistados = () => {
@@ -41,11 +42,11 @@ const ListaEntrevistados = () => {
         return <p className="p-4 text-center text-vinho font-semibold">Nenhum entrevistado encontrado.</p>;
     }
 
-    else {
+    else { 
        
         return (
 
-           <div className="flex flex-col items-center gap-4 w-full max-w-xl px-4">
+           <div className="flex flex-col items-center gap-4 w-full max-w-3xl px-4">
 
             {entrevistados.map((item) => (
 
@@ -106,4 +107,5 @@ DADOS LOCAIS PARA EFEITO DE TESTE
         ];  
 
         setEntrevistados(dados); 
-*/
+    
+        */
