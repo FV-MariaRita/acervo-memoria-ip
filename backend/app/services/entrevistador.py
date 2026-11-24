@@ -13,7 +13,13 @@ from app.schemas.entrevistador import (
     EntrevistadorListaResponse,
     EntrevistadorUpdate,
 )
-from app.storage.b2 import delete_file, gerar_url, upload_file
+from app.storage.b2 import (
+    delete_file,
+    excluir_arquivos_path,
+    gerar_url,
+    update_file,
+    upload_file,
+)
 from app.validators.arquivos import validar_foto
 from fastapi import Depends, File, Form, UploadFile
 from sqlmodel import Session, select
@@ -103,57 +109,70 @@ def service_atualizar_entrevistador(
         )
 
         if foto is not None:
+            foto_validada = validar_foto(
+                arquivo = foto,
+                tipo_foto = "entrevistador"
+            )
+
             path_foto_antiga = session.exec(
                 select(Entrevistador.path_foto)
                 .where(Entrevistador.id == entrevistador_id)
             ).one_or_none()
 
-            delete_file(
-                b2_path = path_foto_antiga
-            )
-
-            path_foto_atualizada = (
-                f"entrevistador/{entrevistador.id}/{entrevistador.id}{foto_validada.extensao}"
-            )
-
-            upload_file(
+            entrevistador.path_foto = update_file(
                 file_bytes = foto_validada.conteudo,
-                b2_path = path_foto_atualizada,
-                content_type = foto_validada.content_type
+                content_type = foto_validada.content_type,
+                path_antigo = path_foto_antiga,
+                extensao = foto_validada.extensao
             )
 
         session.commit()
         session.refresh(entrevistador)
-            
-        return entrevistador
 
     except Exception:
         session.rollback()
-        raise 
+        raise
+
+    try:
+        delete_file(
+            b2_path=path_foto_antiga
+        )
+    except:
+        raise
+
+    return entrevistador
 
 def service_excluir_entrevistador(
     entrevistador_id: int, 
     session: Annotated[Session, Depends(get_session)]
 ) -> Entrevistador | None:
-    # add try except
-    entrevistador = session.get(Entrevistador, entrevistador_id)
+    try:
+        entrevistador = session.get(Entrevistador, entrevistador_id)
 
-    if not entrevistador:
-        raise ValueError("Entrevistador não encontrado.")
+        if not entrevistador:
+            raise ValueError("Entrevistador não encontrado.")
 
-    delete_file(
-        b2_path = entrevistador.path_foto
-    )
+        entrevistador_excluido = deletar_entrevistador(
+            id = entrevistador_id,
+            session = session
+        )
 
-    entrevistador_excluido = deletar_entrevistador(
-        id = entrevistador_id,
-        session = session
-    )
+        if not entrevistador_excluido:
+            raise ValueError("Não foi possível excluir o entrevistador.")
 
-    if not entrevistador_excluido:
-        raise ValueError("Não foi possível excluir o entrevistador.")
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
-    session.commit()
+    try:
+        delete_file(
+            b2_path=entrevistador.path_foto
+        )
+
+    except:
+        raise
+
     return entrevistador_excluido
 
 def service_mostrar_entrevistadores(

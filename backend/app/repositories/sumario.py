@@ -22,7 +22,7 @@ def buscar_sumario (
 
 
 def criar_sumario (
-    sumario: sumarioCreate,
+    sumario: SumarioCreate,
     session: Session
     ) -> Sumario:
 
@@ -32,7 +32,7 @@ def criar_sumario (
 
 def atualizar_sumario (
     id: int,
-    dados: sumarioUpdate,
+    dados: SumarioUpdate,
     session: Session
     ) -> Sumario | None:
 

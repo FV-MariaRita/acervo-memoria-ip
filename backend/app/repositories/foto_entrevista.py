@@ -4,7 +4,7 @@ from app.schemas.entrevista import Fotos_entrevistaCreate, Fotos_entrevistaUpdat
 
 def buscar_fotos_entrevista (
     entrevista_id: int,
-    session: session
+    session: Session
 ) -> list[Fotos_entrevista] | None:
 
     fotos = session.exec(
@@ -20,7 +20,18 @@ def buscar_fotos_entrevista (
 
     return fotos
 
-    
+def buscar_foto_entrevista (
+    id: int, 
+    session: Session
+) -> Fotos_entrevista | None:
+
+    foto = session.get(Fotos_entrevista, id)
+
+    if not foto:
+        return None
+
+    return foto
+
 def criar_foto_entrevista ( 
     foto: Fotos_entrevistaCreate,
     session: Session

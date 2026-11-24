@@ -1,11 +1,12 @@
 from pathlib import Path
 
-from app.models.entrevista import Entrevista
+from app.models.entrevista import Entrevista, Fotos_entrevista
 from app.models.entrevistado import Entrevistado
 from app.repositories.entrevistado import (
     atualizar_entrevistado,
     buscar_entrevistado,
     criar_entrevistado,
+    deletar_entrevistado,
     listar_entrevistados,
 )
 from app.schemas.entrevista import (
@@ -24,6 +25,7 @@ from app.services.entrevista import (
 )
 from app.storage.b2 import (
     delete_file,
+    excluir_arquivos_path,
     gerar_url,
     update_file,
     upload_file,
@@ -211,10 +213,41 @@ def service_atualizar_entrevistado (
             try:
                 delete_file(b2_path=path_novo)
             except Exception:
-                logger.exception("Falha ao excluir novo arquivo do B2.")
+                print()
+                #logger.exception("Falha ao excluir novo arquivo do B2.")
 
         raise
 
+def service_excluir_entrevistado (
+    entrevistado_id: int,
+    session: Session
+) -> Entrevistado | None:
+    
+    try:
+
+        entrevistado_excluido = deletar_entrevistado(
+            id = entrevistado_id,
+            session = session
+        )
+
+        if not entrevistado_excluido:
+            raise ValueError("Entrevistado não encontrado")
+
+        session.commit()
+
+    except:
+        session.rollback()
+        raise
+
+    #excluir do b2
+    try:
+        excluir_arquivos_path(
+            prefixo = f"entrevistados/{entrevistado_id}/"
+        )
+    except:
+        raise
+
+    return entrevistado_excluido
 
 def service_mostrar_entrevistado(
     entrevistado_id: int,

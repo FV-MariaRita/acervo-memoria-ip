@@ -105,36 +105,39 @@ def validar_dimensoes_foto(
     try:
         with Image.open(BytesIO(conteudo)) as imagem:
             largura, altura = imagem.size
-
-            if (
-                largura <= 0
-                or altura <= 0
-                or largura > MAX_LARGURA
-                or altura > MAX_ALTURA
-            ):
-                raise HTTPException(
-                    status_code=400,
-                    detail="As dimensões da foto não são permitidas."
-                )
-
-            proporcao_largura, proporcao_altura = (
-                PROPORCOES_FOTO[tipo_foto]
-            )
-
-            validar_proporcao_foto(
-                largura,
-                altura,
-                proporcao_largura,
-                proporcao_altura,
-            )
-
-    except HTTPException:
-        raise
     except (UnidentifiedImageError, OSError, ValueError):
+            raise HTTPException(
+                status_code=400,
+                detail="Não foi possível verificar as dimensões da foto."
+            )
+    if (
+        largura <= 0
+        or altura <= 0
+        or largura > MAX_LARGURA
+        or altura > MAX_ALTURA
+    ):
         raise HTTPException(
             status_code=400,
-            detail="Não foi possível verificar as dimensões da foto."
+            detail="As dimensões da foto não são permitidas."
         )
+
+    proporcao_largura, proporcao_altura = (
+         PROPORCOES_FOTO[tipo_foto]
+    )
+
+    try:
+        validar_proporcao_foto(
+            largura,
+            altura,
+            proporcao_largura,
+            proporcao_altura,
+        )
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="A proporção da foto não é permitida. Utilize imagens no formato 5:4."
+        )
+    
 
 def validar_foto(
     arquivo: UploadFile,
@@ -149,6 +152,11 @@ def validar_foto(
     validar_tamanho_foto(conteudo)
     formato = validar_formato_foto(conteudo)
     validar_integridade_foto(conteudo)
+    print(
+            "Categoria:", tipo_foto,
+            "Tamanho:", len(conteudo),
+            "Assinatura:", conteudo[:3]
+        )
     validar_dimensoes_foto(conteudo, tipo_foto)
 
     extensao, content_type = FORMATOS_FOTO[formato]
@@ -472,7 +480,6 @@ def validar_audio(arquivo: UploadFile) -> None:
 
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
-
 
 MAX_TAMANHO_PDF = 50 * 1024 * 1024  # 50 MB
 

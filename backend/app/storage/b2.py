@@ -114,10 +114,14 @@ def update_file(
     content_type: str,
     path_antigo: str,
     extensao: str,
+    numero: int | None = None
 ) -> str:
 
     diretorio = str(Path(path_antigo).parent)
-    novo_nome = f"{uuid4()}{extensao}"
+    if not numero:
+        novo_nome = f"{uuid4()}{extensao}"
+    else:
+        novo_nome = f"{numero}{extensao}"
     path_novo = f"{diretorio}/{novo_nome}"
 
     upload_file(
@@ -127,3 +131,104 @@ def update_file(
     )
 
     return path_novo
+
+def gerar_url_path(prefixo: str) -> str:
+    bucket = get_bucket()
+
+    arquivos = list(
+        bucket.ls(
+            folder_to_list=prefixo,
+            latest_only=True,
+            recursive=False
+        )
+    )
+
+    arquivos = [
+        file_version
+        for file_version, folder_name in arquivos
+        if folder_name is None
+    ]
+
+    if not arquivos:
+        raise FileNotFoundError(
+            f"Nenhum arquivo encontrado em {prefixo}"
+        )
+
+    if len(arquivos) > 1:
+        raise ValueError(
+            f"Mais de um arquivo encontrado em {prefixo}"
+        )
+
+    b2_path = arquivos[0].file_name
+    url_base = bucket.get_download_url(b2_path)
+    autorizacao = get_bucket().get_download_authorization(
+        file_name_prefix=b2_path,
+        valid_duration_in_seconds=3600
+    )
+
+    return f"{url_base}?Authorization={autorizacao}"
+
+def mover_arquivo(
+    path_origem: str,
+    path_destino: str
+) -> str:
+    bucket = get_bucket()
+
+    arquivos = [
+        arquivo
+        for arquivo, pasta in bucket.ls(
+            folder_to_list=path_origem,
+            latest_only=True,
+            recursive=False
+        )
+        if pasta is None
+    ]
+
+    if not arquivos:
+        raise FileNotFoundError(
+            f"Nenhum arquivo encontrado em {path_origem}"
+        )
+
+    arquivo = min(
+        arquivos,
+        key=lambda arquivo: arquivo.upload_timestamp
+    )
+
+    nome_arquivo = arquivo.file_name.rsplit("/", 1)[-1]
+
+    caminho_novo = (
+        f"{path_destino.rstrip('/')}/{nome_arquivo}"
+    )
+
+    novo_arquivo = bucket.copy_file(
+        file_id=arquivo.id_,
+        new_file_name=caminho_novo
+    )
+
+    bucket.delete_file_version(
+        file_id=arquivo.id_,
+        file_name=arquivo.file_name
+    )
+
+    return novo_arquivo.file_name
+
+def excluir_arquivos_path(prefixo: str) -> int:
+    bucket = get_bucket()
+
+    arquivos = [
+        arquivo
+        for arquivo, pasta in bucket.ls(
+            folder_to_list=prefixo,
+            latest_only=True,
+            recursive=True
+        )
+        if pasta is None
+    ]
+
+    for arquivo in arquivos:
+        bucket.delete_file_version(
+            file_id=arquivo.id_,
+            file_name=arquivo.file_name
+        )
+
+    return len(arquivos)

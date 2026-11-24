@@ -1,6 +1,8 @@
-from sqlmodel import SQLModel, Field
-from sqlalchemy import Column, Text, UniqueConstraint
 from datetime import date
+
+from sqlalchemy import Column, Text, UniqueConstraint
+from sqlmodel import Field, SQLModel
+
 
 class Entrevista (SQLModel, table=True):
     id: int | None = Field(default = None, primary_key = True)
@@ -25,6 +27,7 @@ class Fotos_entrevista (SQLModel, table=True):
     entrevista_id: int = Field(foreign_key="entrevista.id", ondelete="CASCADE")
     categoria: str
     numero: int
+    extensao: str
     __table_args__ = (
         UniqueConstraint(
             "entrevista_id",

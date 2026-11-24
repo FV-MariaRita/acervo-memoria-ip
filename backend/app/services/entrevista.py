@@ -7,6 +7,7 @@ from app.models.entrevista import (
     Sumario,
 )
 from app.models.entrevistado import Entrevistado
+from app.repositories.entrevista import buscar_entrevista, deletar_entrevista
 from app.repositories.entrevistado import buscar_entrevistado, criar_entrevistado
 from app.repositories.entrevistador_entrevista import (
     associar_entrevistador_entrevista,
@@ -15,6 +16,7 @@ from app.repositories.entrevistador_entrevista import (
 )
 from app.repositories.foto_entrevista import (
     atualizar_foto_entrevista,
+    buscar_foto_entrevista,
     buscar_fotos_entrevista,
     criar_foto_entrevista,
     deletar_foto_entrevista,
@@ -32,7 +34,15 @@ from app.schemas.entrevista import (
     EntrevistaUpdate,
     SumarioResponse,
 )
-from app.storage.b2 import delete_file, gerar_url, upload_file
+from app.storage.b2 import (
+    delete_file,
+    excluir_arquivos_path,
+    gerar_url,
+    gerar_url_path,
+    mover_arquivo,
+    update_file,
+    upload_file,
+)
 from app.validators.arquivos import (
     associar_arquivos_fotos,
     validar_audio,
@@ -167,7 +177,8 @@ def service_cadastrar_entrevista(
                 foto=Fotos_entrevista(
                     entrevista_id=entrevista.id,
                     categoria=foto.categoria,
-                    numero=foto.numero
+                    numero=foto.numero,
+                    extensao="temp"
                 ),
                 session=session
             )
@@ -214,9 +225,17 @@ def service_cadastrar_entrevista(
                 raise ValueError(
                     f"Categoria de foto inválida: {metadado.categoria}"
                 )
-        
+
+            foto_bd = session.exec(
+                    select(Fotos_entrevista).where(
+                        Fotos_entrevista.entrevista_id == entrevista.id,
+                        Fotos_entrevista.categoria == metadado.categoria,
+                        Fotos_entrevista.numero == metadado.numero
+                    )
+                ).first()
+            foto_bd.extensao=foto.extensao
             path = (
-                f"{path_base}/fotos/{metadado.categoria}/{metadado.numero}{foto.extensao}"
+                f"{path_base}/fotos/{metadado.categoria}/{metadado.numero}/{metadado.numero}{foto.extensao}"
             )
         
             upload_file(
@@ -387,10 +406,15 @@ def criar_entrevista_completa(
 '''
 def atualizar_entrevista_completa (
     entrevista_id: int,
+    session: Session,
     dados: EntrevistaUpdate,
-    session: Session
+    audio: UploadFile | None = None,
+    transcricao: UploadFile | None = None,
+    fotos_entrevista: list[UploadFile] | None = None,
+    fotos_marcantes: list[UploadFile] | None = None
 ) -> Entrevista | None:
-
+    paths_b2_criados: list[str] = []
+    paths_b2_excluir: list[str] = []
     try:
 
         entrevista = session.get(Entrevista, entrevista_id)
@@ -406,12 +430,6 @@ def atualizar_entrevista_completa (
 
         if dados.data is not None:
             entrevista.data = dados.data
-
-        if dados.path_audio is not None:
-            entrevista.path_audio = dados.path_audio
-
-        if dados.path_transcricao is not None:
-            entrevista.path_transcricao = dados.path_transcricao
 
         # atualizar entrevistadores
         if dados.entrevistadores is not None:
@@ -482,6 +500,9 @@ def atualizar_entrevista_completa (
                             )
 
         # atualizar a posicao das fotos
+        path_base = (
+            f"entrevistados/{entrevista.entrevistado_id}/entrevistas/{entrevista.id}"
+        )
         if dados.fotos is not None:
             for foto in dados.fotos:
 
@@ -495,6 +516,8 @@ def atualizar_entrevista_completa (
                             status_code = 404,
                             detail = "Erro ao excluir foto"
                         )
+
+                    paths_b2_excluir.append(f"{path_base}/fotos/{foto_excluida.categoria}/{foto_excluida.numero}/")
                 
                 elif not foto.id:
                     foto_adicionada = criar_foto_entrevista(
@@ -504,6 +527,7 @@ def atualizar_entrevista_completa (
                         ),
                         session = session
                     )
+                    
                     if not foto_adicionada:
                         raise HTTPException(
                             status_code = 404,
@@ -511,28 +535,155 @@ def atualizar_entrevista_completa (
                         )
                 
                 else:
+                    posicao_desatualizada = buscar_foto_entrevista(
+                        id = foto.id,
+                        session = session
+                    )
                     posicao_atualizada = atualizar_foto_entrevista(
                         id = foto.id,
                         posicao = foto.numero,
                         session = session
                     )
+                    
+                    path = (
+                        f"{path_base}/fotos/{posicao_atualizada.categoria}"
+                    )
+                    mover_arquivo(
+                        path_origem = f"{path}/{posicao_desatualizada.numero}/{posicao_desatualizada.numero}{posicao_desatualizada.extensao}",
+                        path_destino = f"{path}/{posicao_atualizada.numero}/{posicao_atualizada.numero}{posicao_atualizada.extensao}"
+                    )
+
                     if not posicao_atualizada:
                         raise HTTPException(
                             status_code = 404,
                             detail = "Erro ao atualizar posição da foto"
                         )
 
+        # atualiza arquivos
+    
+        if audio is not None or transcricao is not None or fotos_entrevista is not None or fotos_marcantes is not None:
+    
+            fotos_entrevista = fotos_entrevista or []
+            fotos_marcantes = fotos_marcantes or []
+    
+            # validar metadados e associar arquivos
+            if fotos_entrevista is not None or fotos_marcantes is not None:
+                metadados_entrevista, metadados_marcantes = (
+                    validar_metadados_fotos(dados.fotos)
+                )
+    
+            if fotos_entrevista is not None:
+                arquivos_entrevista = associar_arquivos_fotos(
+                    fotos_entrevista,
+                    metadados_entrevista,
+                    "entrevista"
+                )
+    
+            if fotos_marcantes is not None:
+                arquivos_marcantes = associar_arquivos_fotos(
+                    fotos_marcantes,
+                    metadados_marcantes,
+                    "marcantes"
+                )
+            # upload das fotos
+            if fotos_marcantes is not None or fotos_entrevista is not None:
+                for metadado in sorted(
+                    dados.fotos,
+                    key=lambda foto: (foto.categoria, foto.numero)
+                ):
+            
+                    if metadado.categoria == "entrevista":
+                        foto = arquivos_entrevista[metadado.arquivo_id]
+        
+                    elif metadado.categoria == "marcantes":
+                        foto = arquivos_marcantes[metadado.arquivo_id]
+                
+                    else:
+                        raise ValueError(
+                            f"Categoria de foto inválida: {metadado.categoria}"
+                        )
+                
+                    path = (
+                        f"{path_base}/fotos/{metadado.categoria}/{metadado.numero}/{metadado.numero}{foto.extensao}"
+                    )
+                                
+                    upload_file(
+                        file_bytes=foto.conteudo,
+                        b2_path=path,
+                        content_type=foto.content_type
+                    )
+                
+                    paths_b2_criados.append(path)
+
+            if audio is not None:
+                audio_validado = validar_audio(audio)
+                path_antigo = entrevista.path_audio    
+
+                entrevista.path_audio = update_file(
+                    file_bytes=audio_validado.conteudo,
+                    path_antigo=entrevista.path_audio,
+                    content_type=audio_validado.content_type,
+                    extensao=audio_validado.extensao
+                )
+
+                paths_b2_excluir.append(path_antigo)         
+                paths_b2_criados.append(entrevista.path_audio)
+                    
+            if transcricao is not None:
+                transcricao_validada = validar_pdf(transcricao)
+                path_antigo = entrevista.path_trancricao
+
+                entrevista.path_transcricao = update_file(
+                    file_bytes=transcricao_validada.conteudo,
+                    path_antigo=entrevista.path_transcricao,
+                    content_type=transcricao_validada.content_type,
+                    extensao=transcricao_validada.extensao
+                )
+
+                paths_b2_excluir.append(path_antigo)
+                paths_b2_criados.append(entrevista.path_transcricao)
+                
+                
+        session.flush()
         session.commit()
         session.refresh(entrevista)
+
+    except Exception:
+        session.rollback()
+
+        for path in paths_b2_criados:
+            try:
+                delete_file(b2_path=path)
+            except Exception:
+                raise
+                '''logger.exception(
+                    "Erro ao excluir arquivo após rollback: %s",
+                    path
+                )'''
+
+        raise
+
+    #depois do commit
+    for path in paths_b2_excluir:
+        try:
+            if path.endswith("/"):
+                excluir_arquivos_path(prefixo=path)
+            else:
+                delete_file(b2_path=path)
+
+        except Exception:
+            raise
+            '''logger.exception(
+                "Erro ao excluir arquivo antigo do B2: %s",
+                path
+            )'''
+
         
         return mostrar_entrevista_completa(
             entrevista_id = entrevista.id,
             session = session
         )
-        
-    except Exception:
-        session.rollback()
-        raise
+
 
 def mostrar_entrevista_completa (
     entrevista_id: int,
@@ -577,19 +728,19 @@ def mostrar_entrevista_completa (
     )
 
     path_fotos_marcantes = [
-        gerar_url((
-            f"entrevistados/{entrevistado_id}/{entrevista_id}/fotos/"
+        gerar_url_path(
+            f"entrevistados/{entrevistado_id}/entrevistas/{entrevista_id}/fotos/"
             f"marcantes/"
-            f"{foto.numero}.jpg"
-        ))
+            f"{foto.numero}/"
+        )
         for foto in fotos_marcantes
     ]
     path_fotos_entrevista = [
-        gerar_url((
-            f"entrevistados/{entrevistado_id}/{entrevista_id}/fotos/"
+        gerar_url_path(
+            f"entrevistados/{entrevistado_id}/entrevistas/{entrevista_id}/fotos/"
             f"entrevista/"
-            f"{foto.numero}.jpg"
-        ))
+            f"{foto.numero}/"
+        )
         for foto in fotos_entrevista
     ]
 
@@ -597,7 +748,7 @@ def mostrar_entrevista_completa (
     sumario = buscar_sumario(
         entrevista_id = entrevista_id,
         session = session
-    )
+    ) or []
 
     return EntrevistaResponse(
         local = entrevista.local,
@@ -622,3 +773,31 @@ def mostrar_entrevista_completa (
         path_fotos_entrevista = path_fotos_entrevista,
         path_fotos_marcantes = path_fotos_marcantes
     )
+
+def service_excluir_entrevista(
+    entrevista_id: int,
+    session: Session
+) -> Entrevista | None:
+
+    #excluir do bd
+    try:
+        entrevista_excluida = deletar_entrevista(
+            id = entrevista_id,
+            session = session
+        )
+        session.refresh(entrevista_excluida)
+
+    except:
+        session.rollback()
+        raise
+
+    #excluir do b2
+    try:
+        excluir_arquivos_path(
+            prefixo = f"entrevistados/{entrevista_excluida.entrevistado_id}/{entrevista_id}/"
+        )
+    except:
+        raise
+
+    return entrevista_excluida
+

@@ -7,7 +7,6 @@ from sqlmodel import Session
 
 from app.database.connection import get_session
 from app.models.entrevistado import Entrevistado
-from app.repositories.entrevistado import atualizar_entrevistado, deletar_entrevistado
 
 # complemento da entrevista
 from app.schemas.entrevista import EntrevistaAlertResponse
@@ -19,7 +18,11 @@ from app.schemas.entrevistado import (
     EntrevistadoNomeResponse,
     EntrevistadoUpdate,
 )
-from app.services.entrevistado import service_criar_entrevistado_com_entrevista
+from app.services.entrevistado import (
+    service_atualizar_entrevistado,
+    service_criar_entrevistado_com_entrevista,
+    service_excluir_entrevistado,
+)
 
 #from app.services.auth import require_admin
 
@@ -113,9 +116,10 @@ def excluir_entrevistado (
     session: Annotated[Session, Depends(get_session)]
     ):
 
-    entrevistado_excluido = deletar_entrevistado(
+    entrevistado_excluido = service_excluir_entrevistado(
         id = id, 
-        session = session)
+        session = session
+    )
 
     if not entrevistado_excluido:
         raise HTTPException(
