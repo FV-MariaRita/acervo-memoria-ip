@@ -37,6 +37,7 @@ from app.schemas.entrevista import (
 from app.storage.b2 import (
     delete_file,
     excluir_arquivos_path,
+    gerar_token_download,
     gerar_url,
     gerar_url_path,
     mover_arquivo,
@@ -692,9 +693,7 @@ def mostrar_entrevista_completa (
 
     entrevista = session.get(Entrevista, entrevista_id)
 
-    entrevistado_id = session.exec(
-        select(Entrevista.entrevistado_id).where(Entrevista.id == entrevista_id)
-    ).first()
+    entrevistado_id = entrevista.entrevistado_id
 
     if not entrevista:
         raise ValueError("")
@@ -726,20 +725,25 @@ def mostrar_entrevista_completa (
         [foto for foto in fotos if foto.categoria == "entrevista"],
         key=lambda foto: foto.numero
     )
+    prefixo_b2 = (
+        f"entrevistados/{entrevistado_id}/"
+        f"entrevistas/{entrevista_id}/"
+    )
 
+    autorizacao = gerar_token_download(prefixo_b2)
     path_fotos_marcantes = [
         gerar_url_path(
-            f"entrevistados/{entrevistado_id}/entrevistas/{entrevista_id}/fotos/"
+            f"{prefixo_b2}fotos/"
             f"marcantes/"
-            f"{foto.numero}/"
+            f"{foto.numero}/", autorizacao
         )
         for foto in fotos_marcantes
     ]
     path_fotos_entrevista = [
         gerar_url_path(
-            f"entrevistados/{entrevistado_id}/entrevistas/{entrevista_id}/fotos/"
+            f"{prefixo_b2}fotos/"
             f"entrevista/"
-            f"{foto.numero}/"
+            f"{foto.numero}/", autorizacao
         )
         for foto in fotos_entrevista
     ]
@@ -753,8 +757,8 @@ def mostrar_entrevista_completa (
     return EntrevistaResponse(
         local = entrevista.local,
         data = entrevista.data,
-        path_audio = gerar_url(entrevista.path_audio),
-        path_transcricao = gerar_url(entrevista.path_transcricao),
+        path_audio = gerar_url(entrevista.path_audio, autorizacao),
+        path_transcricao = gerar_url(entrevista.path_transcricao, autorizacao),
 
         entrevistadores = [
             Entrevistador_entrevistaResponse (

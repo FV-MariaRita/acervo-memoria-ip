@@ -40,3 +40,42 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+import logging
+import time
+
+from fastapi import Request
+
+logger = logging.getLogger("performance")
+
+
+@app.middleware("http")
+async def medir_tempo_requisicao(
+    request: Request,
+    call_next
+):
+    inicio = time.perf_counter()
+    status = 500
+
+    try:
+        response = await call_next(request)
+        status = response.status_code
+        return response
+
+    except Exception:
+        logger.exception(
+            "Erro durante %s %s",
+            request.method,
+            request.url.path
+        )
+        raise
+
+    finally:
+        duracao = (time.perf_counter() - inicio) * 1000
+
+        logger.info(
+            "REQUEST | %s | %s | status=%s | tempo=%.2fms",
+            request.method,
+            request.url.path,
+            status,
+            duracao
+        )

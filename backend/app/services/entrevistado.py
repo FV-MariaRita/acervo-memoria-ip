@@ -26,6 +26,7 @@ from app.services.entrevista import (
 from app.storage.b2 import (
     delete_file,
     excluir_arquivos_path,
+    gerar_token_download,
     gerar_url,
     update_file,
     upload_file,
@@ -136,7 +137,11 @@ def service_mostrar_entrevistados(
 ) -> list[EntrevistadoListaResponse]:
 
     entrevistados = listar_entrevistados(session)
-
+    autorizacao = (
+        gerar_token_download("entrevistados/")
+        if any(entrevistado.path_foto for entrevistado in entrevistados)
+        else None
+    )
     resultado = []
 
     for entrevistado in entrevistados:
@@ -145,7 +150,7 @@ def service_mostrar_entrevistados(
             "nome": entrevistado.nome,
             "funcao": entrevistado.funcao,
             "path_foto": (
-                gerar_url(entrevistado.path_foto)
+                gerar_url(entrevistado.path_foto, autorizacao=autorizacao)
                 if entrevistado.path_foto
                 else None
             )
@@ -288,7 +293,7 @@ def mostrar_entrevistas_do_entrevistado (
     for entrevista in entrevistas:
         entrevistaResponse = mostrar_entrevista_completa (
             entrevista_id = entrevista.id,
-            session = session
+            session = session,
         )
         if not entrevistaResponse:
             return None

@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 from functools import lru_cache
 from pathlib import Path
 from uuid import uuid4
@@ -92,15 +93,18 @@ def delete_file (b2_path: str) -> None:
     except Exception as e:
         raise #ErroUpload("Falha ao excluir arquivo do B2") from e
 
-def gerar_url(b2_path: str) -> str:
+def gerar_url(b2_path: str, autorizacao: str | None = None) -> str:
     try:
-        autorizacao = get_bucket().get_download_authorization(
-            file_name_prefix=b2_path,
-            valid_duration_in_seconds=3600
-        )
+        inicio = time.perf_counter()
+        if autorizacao is None:
+            autorizacao = gerar_token_download(b2_path)
 
         url_base = get_bucket().get_download_url(b2_path)
 
+        logger.info(
+            "PERF | B2 listagem | %.2f ms",
+            (time.perf_counter() - inicio) * 1000
+        )
         return f"{url_base}?Authorization={autorizacao}"
 
     except Exception as exc:
@@ -132,7 +136,8 @@ def update_file(
 
     return path_novo
 
-def gerar_url_path(prefixo: str) -> str:
+def gerar_url_path(prefixo: str, autorizacao:str | None = None) -> str:
+    inicio = time.perf_counter()
     bucket = get_bucket()
 
     arquivos = list(
@@ -160,13 +165,13 @@ def gerar_url_path(prefixo: str) -> str:
         )
 
     b2_path = arquivos[0].file_name
-    url_base = bucket.get_download_url(b2_path)
-    autorizacao = get_bucket().get_download_authorization(
-        file_name_prefix=b2_path,
-        valid_duration_in_seconds=3600
-    )
+    
 
-    return f"{url_base}?Authorization={autorizacao}"
+    logger.info(
+            "PERF | B2 listagem | %.2f ms",
+            (time.perf_counter() - inicio) * 1000
+        )
+    return gerar_url(b2_path, autorizacao)
 
 def mover_arquivo(
     path_origem: str,
@@ -232,3 +237,15 @@ def excluir_arquivos_path(prefixo: str) -> int:
         )
 
     return len(arquivos)
+
+def gerar_token_download(prefixo: str) -> str:
+    try:
+        return get_bucket().get_download_authorization(
+            file_name_prefix=prefixo,
+            valid_duration_in_seconds=3600
+        )
+    except Exception as exc:
+        logger.exception("Erro ao gerar autorização de download no B2")
+        raise ErroArmazenamento(
+            "Não foi possível gerar autorização de download"
+        ) from exc

@@ -16,6 +16,7 @@ from app.schemas.entrevistador import (
 from app.storage.b2 import (
     delete_file,
     excluir_arquivos_path,
+    gerar_token_download,
     gerar_url,
     update_file,
     upload_file,
@@ -180,7 +181,11 @@ def service_mostrar_entrevistadores(
 ) -> list[EntrevistadorListaResponse]:
 
     entrevistadores = listar_entrevistadores(session)
-
+    autorizacao = (
+        gerar_token_download("entrevistador/")
+        if any(entrevistador.path_foto for entrevistador in entrevistadores)
+        else None
+    )
     resultado = []
 
     for entrevistador in entrevistadores:
@@ -189,7 +194,7 @@ def service_mostrar_entrevistadores(
             "nome": entrevistador.nome,
             "bio": entrevistador.bio,
             "path_foto": (
-                gerar_url(entrevistador.path_foto)
+                gerar_url(entrevistador.path_foto, autorizacao)
                 if entrevistador.path_foto
                 else None
             )
