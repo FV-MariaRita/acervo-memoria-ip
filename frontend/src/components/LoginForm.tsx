@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { CircleUserRound, Lock, Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import { loginTeste } from "../services/authTemp";
+import BotaoVinho from "./buttons/BotaoVinho";
 
 
 const LoginForm = () => {
@@ -123,14 +124,11 @@ const LoginForm = () => {
                             {erroLogin}
                         </p>
                     )}
-                </div>
+                </div> 
 
-                <button 
-                    type="submit"
-                    className="bg-vinho text-branco w-64 h-6 font-serif rounded hover:bg-vinho-hover/70 hover:shadow-[8px_8px_12px_0px] hover:cursor-pointer"
-                >
+                <BotaoVinho tipo="submit">
                     Entrar
-                </button>
+                </BotaoVinho>
 
                 <Link to='/login'>
                     <p className="text-ocre underline font-semibold text-base hover:font-bold">

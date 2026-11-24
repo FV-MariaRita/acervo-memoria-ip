@@ -34,7 +34,7 @@ body {
 }
 
 h1 {
-  @apply text-vinho text-2xl sm:text-3xl font-bold font-serif my-4 text-center
+  @apply text-vinho text-2xl sm:text-3xl font-bold font-serif my-0 py-4 text-center
 }
 
 /*Customização para deixar o player de áudio do jeito que queremos */

@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 //import { API_URL } from "../../services/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { FileText } from "lucide-react";
+import BotaoVinho from "../buttons/BotaoVinho";
 
 //import type { SolicitacaoCreate } from "../../types/solicitacao";
 
@@ -13,6 +14,7 @@ interface ErrosFormulario {
     cpf?: string;
     telefone?: string;
     rua?: string;
+    numero?: string;
     cep?: string;
     cidade?: string;
     uf?: string;
@@ -43,12 +45,67 @@ const SolicitacaoForm = () => {
     const [erroArquivo, setErroArquivo] = useState("");
 
     //estilos dos elementos
-    const inputClass = `w-full h-10 px-3 bg-[#F5F1E8] border border-grafite/70 rounded-xl text-vinho text-sm font-medium outline-none 
-    focus:ring-2 focus:ring-vinho/30 placeholder:text-ocre/80`;
+    const inputClass = `w-full h-8 px-3 bg-[#F5F1E8] border border-grafite/70 rounded-xl text-vinho text-sm font-medium outline-none 
+    focus:ring-2 focus:ring-vinho/30 `;
 
     const labelClass = `text-vinho text-sm font-semibold`;
 
     const erroClass = "text-red-600 text-xs font-medium";
+
+    //estados para api do cep 
+    const [rua, setRua] = useState("");
+    const [cidade, setCidade] = useState("");
+    const [uf, setUf] = useState("");
+    const [pais, setPais] = useState("");
+    const [erroCep, setErroCep] = useState("")
+    const [consultandoCep, setConsultandoCep] = useState(false);
+
+    const consultarCep = async (cep: string) => {
+
+        const cepLimpo = cep.replace(/\D/g, "");
+        setErroCep(""); 
+
+        if (!cepLimpo)
+            return 
+
+        if (cepLimpo.length !== 8) {
+            setErroCep("Informe um CEP válido com 8 dígitos");
+            return;
+        }
+
+        try {
+            setConsultandoCep(true); 
+
+            const resposta = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json`);
+
+            if (!resposta.ok)
+                throw new Error("Erro ao consultar o CEP"); 
+
+            const dados = await resposta.json(); 
+
+            if (dados.erro) {
+                setErroCep("CEP não encontrado");
+                setRua("");
+                setCidade("");
+                setUf("");
+                return;
+            }
+
+            setRua(dados.logradouro || "");
+            setCidade(dados.localidade || "");
+            setUf(dados.uf || "");
+            setPais("Brasil");
+        }
+
+        catch (erro) {
+            console.error("Erro ao consultar CEP:", erro);
+            setErroCep("Não foi possível consultar o CEP. Tente novamente")
+        }
+
+        finally {
+            setConsultandoCep(false)
+        }
+    }
 
     // Validações
     const validarEmail = (email: string): boolean => {
@@ -109,12 +166,14 @@ const SolicitacaoForm = () => {
         const cpf = String(formData.get("cpf") ?? "");
         const telefone = String(formData.get("telefone") ?? "");
         const rua = String(formData.get("rua") ?? "").trim();
+        const numero = String(formData.get("numero") ?? "").trim();
         const cep = String(formData.get("cep") ?? "");
         const cidade = String(formData.get("cidade") ?? "").trim();
         const uf = String(formData.get("uf") ?? "").trim();
         const pais = String(formData.get("pais") ?? "").trim();
 
-        if (!nome) novosErros.nome = "Informe seu nome.";
+        if (!nome) 
+            novosErros.nome = "Informe seu nome.";
 
         if (!email) {
             novosErros.email = "Informe seu e-mail.";
@@ -134,7 +193,11 @@ const SolicitacaoForm = () => {
             novosErros.telefone = "Informe um telefone válido.";
         }
 
-        if (!rua) novosErros.rua = "Informe sua rua e número.";
+        if (!rua) 
+            novosErros.rua = "Informe sua rua.";
+
+        if (!numero) 
+            novosErros.numero = "Informe o número.";
 
         if (!cep) {
             novosErros.cep = "Informe seu CEP.";
@@ -142,7 +205,8 @@ const SolicitacaoForm = () => {
             novosErros.cep = "Informe um CEP válido.";
         }
 
-        if (!cidade) novosErros.cidade = "Informe sua cidade.";
+        if (!cidade) 
+            novosErros.cidade = "Informe sua cidade.";
 
         if (!uf) {
             novosErros.uf = "Informe a UF.";
@@ -150,7 +214,8 @@ const SolicitacaoForm = () => {
             novosErros.uf = "Informe uma sigla de estado válida.";
         }
 
-        if (!pais) novosErros.pais = "Informe seu país.";
+        if (!pais) 
+            novosErros.pais = "Informe seu país.";
 
         setErros(novosErros);
 
@@ -194,7 +259,7 @@ const SolicitacaoForm = () => {
                 email: String(formData.get("email")).trim(),
                 cpf: String(formData.get("cpf")).replace(/\D/g, ""),
                 telefone: String(formData.get("telefone")).replace(/\D/g, ""),
-                rua: String(formData.get("rua")).trim(),
+                rua: `${String(formData.get("rua")).trim()}, ${String(formData.get("numero")).trim()}`,
                 cep: String(formData.get("cep")).replace(/\D/g, ""),
                 cidade: String(formData.get("cidade")).trim(),
                 uf: String(formData.get("uf")).trim().toUpperCase(),
@@ -256,7 +321,7 @@ const SolicitacaoForm = () => {
             setEnviando(true);
 
             const response = await fetch(
-                `${API_URL}/solicitacoes/${solicitacaoId}/termo-assinado`,
+                `http://localhost:8000/solicitacoes/${solicitacaoId}/termo-assinado`,
                 {
                     method: "POST",
                     body: formData
@@ -292,15 +357,12 @@ const SolicitacaoForm = () => {
                 <form
                     onSubmit={handleSubmit}
                     noValidate
-                    className="border-solid border-3 border-verde text-verde px-10 py-6 flex flex-col gap-10 w-full max-w-[50rem] rounded-xl shadow-[-8px_8px_12px_0px_rgba(90,30,45,0.20)]"
+                    className="border-solid border-3 border-vinho/50 text-ocre px-10 py-8 flex flex-col gap-10 w-full max-w-[50rem] rounded-xl shadow-[-8px_8px_12px_0px_rgba(90,30,45,0.20)]"
                 >
-                    <h2 className="text-verde-hover font-semibold font-serif text-2xl text-center">
-                        Formulário
-                    </h2>
 
                     {/* Dados pessoais */}
                     <section className="flex flex-col gap-2">
-                        <h3 className="text-xl font-serif font-semibold">
+                        <h3 className="text-xl font-serif font-semibold ">
                             Dados pessoais
                         </h3>
 
@@ -314,8 +376,8 @@ const SolicitacaoForm = () => {
                                 type="text"
                                 name="nome"
                                 id="nome"
-                                placeholder="Digite o nome:"
                                 className={inputClass}
+                                required
                             />
 
                             {erros.nome && <p className={erroClass}>{erros.nome}</p>}
@@ -331,8 +393,8 @@ const SolicitacaoForm = () => {
                                 type="email"
                                 name="email"
                                 id="email"
-                                placeholder="Digite seu email:"
                                 className={inputClass}
+                                required
                             />
 
                             {erros.email && <p className={erroClass}>{erros.email}</p>}
@@ -349,9 +411,9 @@ const SolicitacaoForm = () => {
                                     type="text"
                                     name="cpf"
                                     id="cpf"
-                                    placeholder="Digite seu CPF:"
                                     className={inputClass}
                                     maxLength={14}
+                                    required
                                 />
 
                                 {erros.cpf && <p className={erroClass}>{erros.cpf}</p>}
@@ -366,34 +428,18 @@ const SolicitacaoForm = () => {
                                     type="tel"
                                     name="telefone"
                                     id="telefone"
-                                    placeholder="Insira seu telefone:"
                                     className={inputClass}
                                     maxLength={15}
+                                    required
                                 />
 
                                 {erros.telefone && <p className={erroClass}>{erros.telefone}</p>}
                             </div>
                         </div>
 
-                        {/* Rua */}
-                        <div className="flex flex-col gap-1">
-                            <label htmlFor="rua" className={labelClass}>
-                                Rua e número:
-                            </label>
-
-                            <input
-                                type="text"
-                                name="rua"
-                                id="rua"
-                                placeholder="Insira seu endereço:"
-                                className={inputClass}
-                            />
-
-                            {erros.rua && <p className={erroClass}>{erros.rua}</p>}
-                        </div>
-
-                        {/* CEP, cidade e UF */}
+                        {/*cep rua e número*/}
                         <div className="flex flex-col sm:flex-row gap-4">
+
                             <div className="flex flex-col gap-1 flex-1">
                                 <label htmlFor="cep" className={labelClass}>
                                     CEP:
@@ -403,13 +449,62 @@ const SolicitacaoForm = () => {
                                     type="text"
                                     name="cep"
                                     id="cep"
-                                    placeholder="Insira o CEP:"
                                     className={inputClass}
                                     maxLength={9}
+                                    required
+                                    onBlur={(e) => consultarCep(e.target.value)}
                                 />
 
+                                {consultandoCep && (
+                                    <p className="text-xs text-ocre">
+                                        Consultando CEP...
+                                    </p>    
+                                )}
+                                {/*erro na busca do cep*/}
+                                {erroCep && (<p className={erroClass} >{erroCep}</p>)}
+                                {/*erro no submit do form*/}
                                 {erros.cep && <p className={erroClass}>{erros.cep}</p>}
                             </div>
+
+                            <div className="flex flex-col gap-1 flex-3">
+                                <label htmlFor="rua" className={labelClass}>
+                                    Rua:
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="rua"
+                                    id="rua"
+                                    className={inputClass}
+                                    value={rua}
+                                    onChange={(e) => setRua(e.target.value)}
+                                    required
+                                />
+
+                                {erros.rua && <p className={erroClass}>{erros.rua}</p>}
+                            </div>
+
+                            <div className="flex flex-col gap-1 flex-1">
+                                <label htmlFor="numero" className={labelClass}>
+                                    Número
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="numero"
+                                    id="numero"
+                                    maxLength={9}
+                                    className={inputClass}
+                                    required
+                                />
+
+                                {erros.numero && <p className={erroClass}>{erros.numero}</p>}
+
+                            </div>
+                        </div>
+
+                        {/*cidade, uf e país*/}
+                        <div className="flex flex-col sm:flex-row gap-4">
 
                             <div className="flex flex-col gap-1 flex-[2]">
                                 <label htmlFor="cidade" className={labelClass}>
@@ -420,8 +515,10 @@ const SolicitacaoForm = () => {
                                     type="text"
                                     name="cidade"
                                     id="cidade"
-                                    placeholder="Insira a cidade:"
                                     className={inputClass}
+                                    value={cidade}
+                                    onChange={(e) => setCidade(e.target.value)}
+                                    required
                                 />
 
                                 {erros.cidade && <p className={erroClass}>{erros.cidade}</p>}
@@ -436,30 +533,32 @@ const SolicitacaoForm = () => {
                                     type="text"
                                     name="uf"
                                     id="uf"
-                                    placeholder="UF"
                                     maxLength={2}
                                     className={inputClass}
+                                    value={uf}
+                                    onChange={(e) => setUf(e.target.value.toUpperCase())}
+                                    required
                                 />
 
                                 {erros.uf && <p className={erroClass}>{erros.uf}</p>}
                             </div>
-                        </div>
 
-                        {/* País */}
-                        <div className="flex flex-col gap-1">
-                            <label htmlFor="pais" className={labelClass}>
-                                País:
-                            </label>
+                            <div className="flex flex-col gap-1 flex-1">
+                                <label htmlFor="pais" className={labelClass}>
+                                    País:
+                                </label>
 
-                            <input
-                                type="text"
-                                name="pais"
-                                id="pais"
-                                placeholder="Insira o país:"
-                                className={inputClass}
-                            />
+                                <input
+                                    type="text"
+                                    name="pais"
+                                    id="pais"
+                                    className={inputClass}
+                                    required
+                                    value={pais}
+                                />
 
-                            {erros.pais && <p className={erroClass}>{erros.pais}</p>}
+                                {erros.pais && <p className={erroClass}>{erros.pais}</p>}
+                            </div>
                         </div>
                     </section>
 
@@ -493,8 +592,14 @@ const SolicitacaoForm = () => {
                     )}
 
                     {/* Botão */}
-                    <section className="w-full items-center justify-center flex mt-5">
-                        <button
+                    <section className="w-full items-center justify-center flex mt-2">
+
+                        <BotaoVinho tipo="submit">
+                            {enviando
+                                ? "Gerando solicitação"
+                                : "Gerar termo de solicitação"}
+                        </BotaoVinho>
+                        {/*<button
                             type="submit"
                             disabled={enviando}
                             className="bg-vinho text-branco w-64 h-12 font-serif rounded-2xl hover:cursor-pointer text-base disabled:opacity-50 disabled:cursor-not-allowed"
@@ -502,16 +607,16 @@ const SolicitacaoForm = () => {
                             {enviando
                                 ? "Gerando solicitação..."
                                 : "Gerar termo de solicitação"}
-                        </button>
+                        </button>*/}
                     </section>
                 </form>
             )}
 
             {/*download e envio do termo */}
             {etapa === 2 && !concluida &&(
-                <section className="border-solid border-3 border-verde text-grafite px-10 py-8 flex flex-col gap-8 w-full max-w-[50rem] rounded-xl shadow-[-8px_8px_12px_0px_rgba(90,30,45,0.20)]">
+                <section className="border-solid border-3 border-vinho/70 text-grafite px-10 py-8 flex flex-col gap-8 w-full max-w-[50rem] rounded-xl shadow-[-8px_8px_12px_0px_rgba(90,30,45,0.20)]">
 
-                    <h2 className="text-verde-hover font-semibold font-serif text-2xl text-center">
+                    <h2 className="text-ocre-hover font-semibold font-serif text-2xl text-center">
                         Assinatura do termo
                     </h2>
 
@@ -533,7 +638,7 @@ const SolicitacaoForm = () => {
                         <button
                             type="button"
                             onClick={handleBaixarTermo}
-                            className="flex items-center justify-center gap-3 border border-verde/50 rounded-lg bg-[#F5F1E8] px-4 py-3 w-fit hover:bg-verde/10 transition-colors"
+                            className="flex items-center justify-center gap-3 border border-verde/50 rounded-lg bg-[#F5F1E8] px-4 py-3 w-fit hover:bg-verde/10 hover:cursor-pointer transition-colors"
                         >
                             <FileText size={28} className="text-verde"/>
 
@@ -599,26 +704,17 @@ const SolicitacaoForm = () => {
 
                     {/* Botões */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setEtapa(1);
-                                setErroEnvio("");
-                            }}
-                            disabled={enviando}
-                            className="border border-vinho text-vinho w-64 h-12 font-serif rounded-2xl hover:bg-vinho/10 disabled:opacity-50"
-                        >
-                            Voltar
-                        </button>
 
-                        <button
-                            type="button"
-                            onClick={handleEnviarTermo}
-                            disabled={!termoAssinado || enviando}
-                            className="bg-vinho text-branco w-64 h-12 font-serif rounded-2xl hover:cursor-pointer text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
+                        <BotaoVinho tipo="button" variante="borda" disabled={enviando} onClick={()=> {
+                            setEtapa(1)
+                            setErroEnvio("")
+                        }}>
+                            Voltar
+                        </BotaoVinho>
+
+                        <BotaoVinho tipo="button" disabled={!termoAssinado || enviando} onClick={handleEnviarTermo}>
                             {enviando ? "Enviando..." : "Enviar solicitação"}
-                        </button>
+                        </BotaoVinho>
                     </div>
                 </section>
             )}

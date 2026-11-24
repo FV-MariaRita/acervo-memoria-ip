@@ -8,12 +8,12 @@ import Entrevistadores from '../pages/Entrevistadores';
 import EntrevistadoEspecifica from '../pages/EntrevistadoEspecifica';
 import Login from '../pages/Login';
 import Solicitacoes from '../pages/SolicitacaoTranscricao';
-import Painel from '../pages/Painel';
-import CadastroEntrevista from '../pages/CadastroEntrevista';
-import CadastroHistoriaOral from '../pages/CadastroHistoriaOral';
-import PainelSolicitacoes from '../pages/PainelSolicitacoes';
-import SolicitacaoEspecifica from '../pages/SolicitacaoEspecifica';
-import CadastroEntrevistador from '../pages/CadastroEntrevistador';
+import Painel from '../pages/admin/Painel';
+import CadastroEntrevista from '../pages/admin/CadastroEntrevista';
+import CadastroHistoriaOral from '../pages/admin/CadastroHistoriaOral';
+import PainelSolicitacoes from '../pages/admin/PainelSolicitacoes';
+import SolicitacaoEspecifica from '../pages/admin/SolicitacaoEspecifica';
+import CadastroEntrevistador from '../pages/admin/CadastroEntrevistador';
 import AdminEntrevistadores from '../pages/admin/AtualizarEntrevistadores';
 
 

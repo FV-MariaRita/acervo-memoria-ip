@@ -1,32 +1,33 @@
 import { Link } from "react-router-dom";
 //import ListaSolicitacoes from "../components/ListaSolicitacoes";
-import TabelaSolicitacoes from "../components/TabelaSolicitações";
-import { solicitacoes } from "../data/solicitacoes";
+import TabelaSolicitacoes from "../../components/TabelaSolicitações";
+import { solicitacoes } from "../../data/solicitacoes";
 
 const Painel = () => {
 
-    const solicitacoesRecentes = [...solicitacoes]
-        .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+    const solicitacoesPendentes = [...solicitacoes]
+        .filter((solicitacao) => solicitacao.status === "pendente")
+        .sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime())
         .slice(0, 5);
 
     const botoesCadastro = [
         {
-            "title": "Adicionar entrevistado",
+            "title": "Cadastro de entrevistado",
             "linkTo": "/admin/cadastro-entrevistado"
         },
         {
-            "title": "Adicionar entrevista para um entrevistado",
+            "title": "Cadastro de nova entrevista para um entrevistado",
             "linkTo": "/admin/cadastro-entrevista"
         },
         {
-            "title": "Adicionar entrevistador",
+            "title": "Cadastro de entrevistador",
             "linkTo": "/admin/cadastro-entrevistador"
         }
     ];
 
     return (
         <>
-        <div className="flex flex-col items-center px-4 py-8 gap-10 w-full">
+        <div className="flex flex-col items-center px-4 gap-10 w-full py-4">
             <h2 className="text-vinho text-2xl sm:text-3xl font-bold font-serif my-4 p-4 text-center border-solid border-vinho/30 border-b-3  shadow-md">
                 Bem vindo, administrador!
             </h2>
@@ -41,15 +42,14 @@ const Painel = () => {
                 {/*Cadastro de conteúdos*/}
                 <div className="flex flex-col gap-5 w-full">
                     <h3 className="text-[1.2rem] font-bold text-ocre font-serif">
-                        Inclua novos conteúdos no site
+                        Novos conteúdos
                     </h3>
 
                     <div className="flex flex-wrap w-full max-w-4xl gap-10">
-
                         {botoesCadastro.map((item, index) => (
                             <Link key={index} to={item.linkTo} className="w-[30%]">
                                 <button
-                                    className=" w-full h-20 text-branco border-ocre border-solid border-2 bg-vinho text-sm md:text-base
+                                    className=" w-full h-20 text-branco border-vinho border-solid border-2 bg-vinho text-sm md:text-base cursor-pointer
                                         font-bold font-corpo px-4 py-2 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1
                                         hover:shadow-lg hover:cursor-pointeractive:translate-y-0active:scale-[0.98]
                                     "
@@ -71,19 +71,19 @@ const Painel = () => {
                             Solicitações de transcrição
                         </h3>
 
-                        <p className="font-semibold text-grafite text-left text-base pr-6 w-full">
-                            As últimas solicitações realizadas estão descritas abaixo.
+                        <p className="text-grafite text-left text-base pr-6 w-full">
+                            As solicitações mais antigas ainda pendentes estão descritas abaixo.
                         </p>
                     </div>
                    
 
                     <div className="flex flex-wrap gap-10">
-                        <TabelaSolicitacoes solicitacoes={solicitacoesRecentes} />
+                        <TabelaSolicitacoes solicitacoes={solicitacoesPendentes} />
                     </div>
 
                     <div className="w-fit self-end">
                         <Link to="/admin/solicitacoes">
-                            <h3 className="text-base font-bold text-vinho font-serif text-right hover:bg-brancoPapel-hover rounded-xl px-5 hover:cursor-pointer">
+                            <h3 className="text-base font-bold text-vinho font-serif text-right hover:text-verde-hover rounded-xl px-5 hover:cursor-pointer">
                                 Ver todas as solicitações
                             </h3>
                         </Link>

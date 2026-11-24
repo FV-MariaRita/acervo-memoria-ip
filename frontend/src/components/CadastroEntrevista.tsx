@@ -21,6 +21,7 @@ import {
 } from "../services/entrevista";
 
 import { useNavigate } from "react-router-dom";
+import BotaoOcre from "./buttons/BotaoOcre";
 
 interface FotoComId {
   arquivo: File;
@@ -346,7 +347,7 @@ const CadastroEntrevistaForm = ({
                         : null,
                     }))
                   }
-                  className="w-full text-center placeholder-text-center bg-transparent outline-none placeholder:text-vinho placeholder:font-corpo placeholder:text-sm"
+                  className="w-full text-center placeholder-text-center bg-transparent outline-none"
                 />
               </div>
             </div>
@@ -472,17 +473,13 @@ const CadastroEntrevistaForm = ({
           {/* Botão de envio */}
           {!bloqueado && (
             <div className="flex w-full text-brancoPapel text-m font-corpo font-semibold justify-center items-center">
-              <button
-                type="submit"
-                disabled={enviando}
-                className="px-6 h-8 text-center rounded hover:bg-ocre-hover bg-ocre justify-center items-center flex disabled:opacity-50"
-              >
+              <BotaoOcre tipo="submit" disabled={enviando}>
                 {enviando
-                  ? "Enviando..."
+                  ? "Enviando"
                   : modo === "unificado"
-                    ? "Cadastrar Entrevistado e Entrevista"
+                    ? "Cadastrar entrevistado e entrevista"
                     : "Cadastrar"}
-              </button>
+              </BotaoOcre>
             </div>
           )}
         </fieldset>

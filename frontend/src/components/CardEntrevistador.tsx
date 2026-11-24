@@ -99,7 +99,7 @@ const CardEntrevistador = ({id, nome, bio, path_foto, modoEdicao = false, onSalv
 
   return (
     <div className="flex flex-col gap-3 p-4 sm:p-6 w-full max-w-2xl">
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 w-full">
 
         <div className="flex flex-col items-center gap-2 shrink-0">
           <img
@@ -140,14 +140,14 @@ const CardEntrevistador = ({id, nome, bio, path_foto, modoEdicao = false, onSalv
                 value={nomeEditado}
                 onChange={(e) => setNomeEditado(e.target.value)}
                 maxLength={100}
-                className="w-full rounded-lg border-2 border-vinho/70 bg-white/50 px-3 py-1 font-semibold text-lg text-grafite"
+                className="w-full rounded-lg border-2 border-vinho/70 bg-white/50 px-2 py-1 font-semibold text-lg text-grafite"
               />
 
               <textarea
                 value={bioEditada}
                 onChange={(e) => setBioEditada(e.target.value)}
                 rows={5}
-                className="w-full text-justify rounded-lg border border-vinho/70 bg-white/50 px-3 py-2 text-sm text-grafite resize-y"
+                className="w-full text-justify rounded-lg border border-vinho/70 bg-white/50 px-2 py-2 text-sm text-grafite resize-y"
               />
             </>
           ) : (
@@ -165,38 +165,50 @@ const CardEntrevistador = ({id, nome, bio, path_foto, modoEdicao = false, onSalv
       </div>
 
       {modoEdicao && (
-        <div className="flex flex-wrap justify-between items-center gap-2 w-full">
+        
+        editando ? (
+          <div className="flex flex-wrap justify-end items-center gap-2 w-full">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={salvarEdicao}
+                disabled={
+                  salvando ||
+                  excluindo ||
+                  !nomeEditado.trim() ||
+                  !bioEditada.trim()
+                }
+                className="flex items-center gap-2 rounded-lg bg-ocre px-2 py-1 text-white hover:bg-ocre-hover disabled:opacity-50"
+              >
+                <Save size={16} />
+                {salvando ? "Salvando..." : "Salvar"}
+              </button>
 
-          {editando ? (
-            <>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={salvarEdicao}
-                  disabled={
-                    salvando ||
-                    excluindo ||
-                    !nomeEditado.trim() ||
-                    !bioEditada.trim()
-                  }
-                  className="flex items-center gap-2 rounded-lg bg-ocre px-2 py-1 text-white hover:bg-ocre-hover disabled:opacity-50"
-                >
-                  <Save size={16} />
-                  {salvando ? "Salvando..." : "Salvar"}
-                </button>
+              <button
+                type="button"
+                onClick={cancelar}
+                disabled={salvando || excluindo}
+                className="flex items-center gap-2 rounded-lg border border-vinho px-2 py-1 text-vinho hover:bg-vinho/10"
+              >
+                <X size={16} />
+                Cancelar
+              </button>
+            </div>
 
-                <button
-                  type="button"
-                  onClick={cancelar}
-                  disabled={salvando || excluindo}
-                  className="flex items-center gap-2 rounded-lg border border-vinho px-2 py-1 text-vinho hover:bg-vinho/10"
-                >
-                  <X size={16} />
-                  Cancelar
-                </button>
-              </div>
-            </>
-          ) : (
+            <button
+              type="button"
+              onClick={excluirEntrevistador}
+              disabled={salvando || excluindo}
+              className="flex items-center gap-2 rounded-lg bg-vinho px-2 py-1 text-white hover:bg-vinho-hover disabled:opacity-50"
+            >
+              <X size={16} />
+              {excluindo ? "Excluindo..." : "Excluir"}
+            </button>
+          </div>
+
+        ) : (
+
+          <div className="flex flex-wrap justify-end items-center gap-4 w-full">
             <button
               type="button"
               onClick={() => setEditando(true)}
@@ -206,20 +218,20 @@ const CardEntrevistador = ({id, nome, bio, path_foto, modoEdicao = false, onSalv
               <Pencil size={16} />
               Editar
             </button>
-          )}
 
-          <button
-            type="button"
-            onClick={excluirEntrevistador}
-            disabled={salvando || excluindo}
-            className="flex items-center gap-2 rounded-lg bg-vinho px-2 py-1 text-white hover:bg-vinho-hover disabled:opacity-50"
-          >
-            <X size={16} />
-            {excluindo ? "Excluindo..." : "Excluir"}
-          </button>
-
-        </div>
+            <button
+              type="button"
+              onClick={excluirEntrevistador}
+              disabled={salvando || excluindo}
+              className="flex items-center gap-2 rounded-lg bg-vinho px-2 py-1 text-white hover:bg-vinho-hover disabled:opacity-50"
+            >
+              <X size={16} />
+              {excluindo ? "Excluindo..." : "Excluir"}
+            </button>
+          </div>
+        )
       )}
+
     </div>
   );
 };

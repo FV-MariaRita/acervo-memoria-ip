@@ -1,4 +1,4 @@
-import CadastroEntrevistadorForm from "../components/CadastroEntrevistadorForm";
+import CadastroEntrevistadorForm from "../../components/CadastroEntrevistadorForm";
 
 const CadastroEntrevistador = () => {
 

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import TabelaSolicitacoes from "../components/TabelaSolicitações";
-import { solicitacoes } from "../data/solicitacoes";
-import { Link } from "react-router-dom";
+import TabelaSolicitacoes from "../../components/TabelaSolicitações";
+import { solicitacoes } from "../../data/solicitacoes";
 
 type StatusFiltro = "todos" | "aprovada" | "pendente" | "recusada";
 type OrdemData = "recentes" | "antigas";
@@ -11,10 +10,7 @@ const PainelSolicitacoes = () => {
     const [statusFiltro, setStatusFiltro] = useState<StatusFiltro>("todos");
     const [ordemData, setOrdemData] = useState<OrdemData>("recentes");
 
-    // Obtém os entrevistados sem repetir nomes
-
-
-    // Aplica os filtros e a ordenação
+    //filtros
     const solicitacoesFiltradas = solicitacoes
         .filter((item) => {
             const correspondeStatus =
@@ -29,34 +25,24 @@ const PainelSolicitacoes = () => {
         });
 
     return (
-        <div className="flex flex-col items-center">
-            <div className="w-full max-w-4xl py-4 flex flex-col items-start justify-start">
 
-                <Link to='/admin'> 
-                    <p className="font-corpo text-vinho text-sm mt-3 pr-6 w-full text-left font-semibold hover:cursor-pointer">
-                        ← Voltar para o painel
-                    </p>
-                </Link>
-                
+        <div className="flex flex-col items-center py-4">
 
-                <h2 className="text-ocre text-2xl sm:text-3xl font-bold font-serif my-4 text-left">
+            <div className="w-full max-w-4xl py-4 flex flex-col gap-4 items-start justify-start">                
+
+                <h2 className="text-ocre text-3xl sm:text-3xl font-bold font-serif py-4 text-left">
                     Solicitações realizadas
                 </h2>
 
-                <p className="font-corpo text-grafite text-base mb-10 pr-6 w-full text-left">
-                    Gerencie as solicitações de transcrição realizadas.
-                </p>
-
-                {/* Filtros */}
+                {/*filtros*/}
                 <div className="w-full flex flex-wrap gap-4 mb-6">
 
-                    {/* Filtro por status */}
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="status" className="font-corpo text-grafite font-bold">
+                        <label htmlFor="status" className="font-corpo text-grafite font-semibold">
                             Status
                         </label>
                         
-                        <div className="border-2 border-ocre rounded-xl  bg-[#E3E3E380] px-3">
+                        <div className="border-2 border-vinho rounded-xl  bg-brancoPapel/30 px-3">
                             <select
                                 id="status"
                                 value={statusFiltro}
@@ -72,13 +58,12 @@ const PainelSolicitacoes = () => {
                         
                     </div>
 
-                    {/* Ordenação por data */}
                     <div className="flex flex-col gap-1">
-                        <label htmlFor="ordem" className="font-corpo text-grafite font-bold">
+                        <label htmlFor="ordem" className="font-corpo text-grafite font-semibold">
                             Ordenar por
                         </label>
 
-                        <div className="border-2 border-ocre rounded-xl  bg-[#E3E3E380] px-3">
+                        <div className="border-2 border-vinho rounded-xl  bg-brancoPapel/30 px-3">
 
                             <select
                                 id="ordem"

@@ -19,6 +19,8 @@ export async function loginTeste(email: string, senha: string): Promise<Admin>  
 
     localStorage.setItem("authTeste", "true"); //guarda os dados em localStorage pra simular que o admin continua logado até ele deslogar
 
+    window.dispatchEvent(new Event("authChange"));
+
     return {
         email : AdminTeste.email,
         senha: AdminTeste.senha
@@ -28,6 +30,7 @@ export async function loginTeste(email: string, senha: string): Promise<Admin>  
 export async function logoutTeste() {
 
     localStorage.removeItem("authTeste");
+    window.dispatchEvent(new Event("authChange"));
 }
 
 export function verificarAdminTeste(): boolean {

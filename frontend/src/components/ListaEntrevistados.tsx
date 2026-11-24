@@ -46,7 +46,7 @@ const ListaEntrevistados = () => {
        
         return (
 
-           <div className="flex flex-col items-center gap-4 w-full max-w-3xl px-4">
+           <div className="flex flex-col items-center gap-4 sm:w-full md:max-w-3xl px-4">
 
             {entrevistados.map((item) => (
 

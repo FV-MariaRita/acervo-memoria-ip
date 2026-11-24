@@ -3,7 +3,7 @@ import type { SolicitacaoLista } from "../types/solicitacao";
 export const solicitacoes: SolicitacaoLista[] = [
     {
         id: 1,
-        nome: "Solicitação de acesso ao acervo",
+        nome: "Anna Beatriz",
         entrevistado: "Maria da Silva",
         data: "2026-10-15",
         path_termo: "/arquivos/termo-1.pdf",
@@ -11,7 +11,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 2,
-        nome: "Solicitação de entrevista",
+        nome: "Maria Rita",
         entrevistado: "João Santos",
         data: "2026-10-20",
         path_termo: "/arquivos/termo-2.pdf",
@@ -19,7 +19,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 3,
-        nome: "Acesso a documentos históricos",
+        nome: "Mariana dos Santos",
         entrevistado: "Ana Oliveira",
         data: "2026-10-25",
         path_termo: "/arquivos/termo-3.pdf",
@@ -27,7 +27,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 4,
-        nome: "Solicitação de consulta",
+        nome: "Lucas Rodrigues",
         entrevistado: "Pedro Costa",
         data: "2026-11-01",
         path_termo: "/arquivos/termo-4.pdf",
@@ -35,7 +35,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 5,
-        nome: "Solicitação de acesso à entrevista",
+        nome: "Victor Matos",
         entrevistado: "Carlos Mendes",
         data: "2026-11-03",
         path_termo: "/arquivos/termo-5.pdf",
@@ -43,7 +43,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 6,
-        nome: "Solicitação de uso de fotografias",
+        nome: "Julia Nogueira",
         entrevistado: "Fernanda Almeida",
         data: "2026-11-05",
         path_termo: "/arquivos/termo-6.pdf",
@@ -51,7 +51,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 7,
-        nome: "Solicitação de acesso ao acervo",
+        nome: "Guilherme Oliveira",
         entrevistado: "Roberto Ferreira",
         data: "2026-11-08",
         path_termo: "/arquivos/termo-7.pdf",
@@ -59,7 +59,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 8,
-        nome: "Solicitação de consulta histórica",
+        nome: "Artur Cezario",
         entrevistado: "Luciana Rodrigues",
         data: "2026-11-10",
         path_termo: "/arquivos/termo-8.pdf",
@@ -67,7 +67,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 9,
-        nome: "Solicitação de entrevista",
+        nome: "Maria Eduarda",
         entrevistado: "Marcos Oliveira",
         data: "2026-11-12",
         path_termo: "/arquivos/termo-9.pdf",
@@ -75,7 +75,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 10,
-        nome: "Solicitação de reprodução de imagens",
+        nome: "Victor Adao",
         entrevistado: "Beatriz Santos",
         data: "2026-11-14",
         path_termo: "/arquivos/termo-10.pdf",
@@ -83,7 +83,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 11,
-        nome: "Solicitação de acesso a documentos históricos",
+        nome: "Luís Henrique",
         entrevistado: "Antônio Costa",
         data: "2026-11-16",
         path_termo: "/arquivos/termo-11.pdf",
@@ -91,7 +91,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 12,
-        nome: "Solicitação de consulta ao acervo",
+        nome: "Alice",
         entrevistado: "Camila Souza",
         data: "2026-11-18",
         path_termo: "/arquivos/termo-12.pdf",
@@ -99,7 +99,7 @@ export const solicitacoes: SolicitacaoLista[] = [
     },
     {
         id: 13,
-        nome: "Solicitação de acesso à entrevista",
+        nome: "Ricardo",
         entrevistado: "Daniel Martins",
         data: "2026-11-20",
         path_termo: "/arquivos/termo-13.pdf",

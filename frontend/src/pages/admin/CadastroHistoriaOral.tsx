@@ -1,11 +1,11 @@
 import { useState } from "react";
-import type { dadosEntrevistadoForm } from "../components/CadastroEntrevistadoForm";
-import type { dadosEntrevistaForm } from "../components/CadastroEntrevista";
-import { criarEntrevistadoComEntrevista } from "../services/entrevistados";
+import type { dadosEntrevistadoForm } from "../../components/CadastroEntrevistadoForm";
+import type { dadosEntrevistaForm } from "../../components/CadastroEntrevista";
+import { criarEntrevistadoComEntrevista } from "../../services/entrevistados";
 import { ChevronUp, ChevronDown, Plus } from "lucide-react";
 
-import CadastroEntrevistadoForm from "../components/CadastroEntrevistadoForm";
-import CadastroEntrevistaForm from "../components/CadastroEntrevista";
+import CadastroEntrevistadoForm from "../../components/CadastroEntrevistadoForm";
+import CadastroEntrevistaForm from "../../components/CadastroEntrevista";
 
 interface EntrevistaCard {
   id: number;
@@ -122,7 +122,7 @@ const CadastroHistoriaOral = () => {
 
   return (
     <div className="flex flex-col items-center mx-10 md:mx-24 my-10">
-      <div className="w-full max-w-[1000px] flex flex-col gap-6">
+      <div className="w-full max-w-[1000px] flex flex-col gap-2">
         <h2 className="text-3xl text-ocre font-title text-center mb-2">
           Cadastro de História Oral
         </h2>
@@ -158,9 +158,6 @@ const CadastroHistoriaOral = () => {
                 : "hidden"
             }
           >
-            <div className="text-2xl text-vinho font-title">
-              Dados do entrevistado
-            </div>
 
             <CadastroEntrevistadoForm
               bloqueado={cadastroEntrevistadoConcluido}
@@ -213,10 +210,7 @@ const CadastroHistoriaOral = () => {
                     : "hidden"
                 }
               >
-                <div className="text-2xl text-vinho font-title">
-                  Cadastro da entrevista #{entrevista.id}
-                </div>
-
+                
                 <CadastroEntrevistaForm
                   modo={primeiraEntrevista ? "unificado" : "adicional"}
                   entrevistadoId={entrevistadoId}

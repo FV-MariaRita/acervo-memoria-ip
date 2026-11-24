@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import type { EntrevistadoCreate } from "../types/entrevistado";
 import { ImagePlus, X } from "lucide-react";
+import BotaoOcre from "./buttons/BotaoOcre";
+import ContadorCaracteres from "./utils/ContadorCaracteres";
 
 export interface dadosEntrevistadoForm {
   dados: EntrevistadoCreate;
@@ -59,7 +61,7 @@ const CadastroEntrevistadoForm = ({bloqueado = false, confirmado = false, onConf
   return (
     <div className="w-full max-w-[800px] mx-auto flex flex-col items-center px-4">
 
-      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-8">
         <fieldset
           disabled={bloqueado}
           className={`flex flex-col gap-4 transition-opacity ${
@@ -87,7 +89,8 @@ const CadastroEntrevistadoForm = ({bloqueado = false, confirmado = false, onConf
 
           {/*função*/}
           <div className="flex flex-col gap-1">
-            <label className="px-2 font-semibold text-vinho text-md">
+
+            <label className="px-2 font-semibold text-vinho text-m">
               Função:
             </label>
 
@@ -98,18 +101,23 @@ const CadastroEntrevistadoForm = ({bloqueado = false, confirmado = false, onConf
                 value={dadosEntrevistado.funcao}
                 onChange={(e) => atualizarCampo("funcao", e.target.value)}
                 required
-                maxLength={100}
+                maxLength={30}
                 className="w-full bg-transparent outline-none"
               />
+            </div>
+
+            <div className="flex justify-end px-2">
+              <ContadorCaracteres valor={dadosEntrevistado.funcao} limite={30} />
             </div>
           </div>
 
           {/*bio*/}
           <div className="flex flex-col gap-1">
+
             <label className="px-2 font-semibold text-vinho text-m">
               Biografia:
             </label>
-
+            
             <div className="flex rounded-xl border border-vinho/70 w-full bg-[#E3E3E380] px-3 py-2">
               <textarea
                 name="bio"
@@ -117,8 +125,12 @@ const CadastroEntrevistadoForm = ({bloqueado = false, confirmado = false, onConf
                 onChange={(e) => atualizarCampo("bio", e.target.value)}
                 required
                 rows={6}
+                maxLength={300}
                 className="w-full bg-transparent outline-none resize-y"
               />
+            </div>
+            <div className="flex flex-col justify-end px-2">
+              <ContadorCaracteres valor={dadosEntrevistado.bio} limite={300} />
             </div>
           </div>
 
@@ -173,13 +185,11 @@ const CadastroEntrevistadoForm = ({bloqueado = false, confirmado = false, onConf
           )}
 
           {!bloqueado && (
-            <div className="flex w-full text-brancoPapel text-m font-corpo font-semibold justify-center items-center">
-              <button
-                type="submit"
-                className="px-6 h-8 text-center rounded hover:bg-ocre-hover bg-ocre justify-center items-center flex"
-              >
+            <div className="flex w-full text-brancoPapel text-m font-corpo font-semibold justify-center items-center mt-2">
+
+              <BotaoOcre tipo="submit">
                 {confirmado ? "Atualizar e continuar" : "Continuar"}
-              </button>
+              </BotaoOcre>
             </div>
           )}
         </fieldset>
